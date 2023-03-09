@@ -8,9 +8,9 @@ import {INITIAL_PAGE, INITIAL_PAGE_SIZE} from "core/consts/pagination";
 import {SettingsTab} from "components/settings/tabs/SettingsTab";
 import {MakesTabForm} from "components/settings/tabs/make/MakesTabForm";
 import {MakesTabTable} from "components/settings/tabs/make/MakesTabTable";
-import {Make} from "core/types/types";
 import {PageableUtils} from "core/utils/pageable";
 import {useMakes} from "core/hooks/useMakes";
+import {Make} from "core/types/types";
 
 export const MakesTab: React.FC = () => {
   const router = useRouter();
@@ -19,8 +19,9 @@ export const MakesTab: React.FC = () => {
   const size = Number.parseInt(router.query.size as string) || INITIAL_PAGE_SIZE;
 
   const {data, mutate} = useMakes({page, size}, {revalidateOnMount: false, revalidateOnFocus: false});
-  const [selection, setSelection] = React.useState<Array<GridRowId>>([]);
-  const [selectedMake, setSelectedMake] = React.useState<Make | undefined | null>(null)
+  const [selectedRows, setSelectedRows] = React.useState<Array<GridRowId>>([]);
+
+  const selectedMake: Make | undefined = data.content.find((item) => item.id === selectedRows?.[0])
 
   React.useEffect(() => {
     mutate()
@@ -44,10 +45,7 @@ export const MakesTab: React.FC = () => {
   }
 
   const handleRowSelectionChange = (selection: GridRowSelectionModel) => {
-    const id = selection?.[0] || undefined;
-    const item = data.content.find((item) => item.id === id);
-    setSelection(selection)
-    setSelectedMake(item)
+    setSelectedRows(selection)
   }
 
   const handleRefreshClick = async () => {
@@ -55,8 +53,7 @@ export const MakesTab: React.FC = () => {
   }
 
   const handleUnselectClick = async () => {
-    await setSelection([]);
-    await setSelectedMake(null);
+    await setSelectedRows([]);
   }
 
   return (
@@ -67,7 +64,7 @@ export const MakesTab: React.FC = () => {
           rows={data}
           columns={MAKES_COLUMNS}
           paginationModel={{page: page - 1, pageSize: size}}
-          rowSelectionModel={selection}
+          rowSelectionModel={selectedRows}
           onRefreshClick={() => handleRefreshClick()}
           onUnselectClick={() => handleUnselectClick()}
           onPaginationChange={(pagination, _) => handlePaginationChange(pagination)}
