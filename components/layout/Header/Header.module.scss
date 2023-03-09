@@ -1,0 +1,17 @@
+.image {
+  transition: transform .2s;
+  filter: opacity(1) drop-shadow(0 0 0 blue);
+}
+
+.image:hover {
+  transform: scale(1.1);
+}
+
+.fullName {
+  transition: transform .2s;
+}
+
+.fullName:hover {
+  transform: scale(1.03);
+  cursor: pointer;
+}
