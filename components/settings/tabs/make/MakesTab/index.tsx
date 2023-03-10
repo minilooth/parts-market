@@ -2,6 +2,7 @@ import React from "react";
 import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from "@mui/x-data-grid";
 import {Stack} from "@mui/material";
 import {useRouter} from "next/router";
+import {toast} from "react-toastify";
 
 import {MAKES_COLUMNS} from "core/consts/settings";
 import {INITIAL_PAGE, INITIAL_PAGE_SIZE} from "core/consts/pagination";
@@ -49,11 +50,33 @@ export const MakesTab: React.FC = () => {
   }
 
   const handleRefreshClick = async (_: React.MouseEvent) => {
+    await setSelectedRows([]);
     await mutate();
   }
 
   const handleUnselectClick = async (_: React.MouseEvent) => {
     await setSelectedRows([]);
+  }
+
+  const handleSaveClick = async (make: Make, callback: () => void) => {
+    if (selectedMake) {
+      toast.success('Make successfully updated');
+    }
+    else {
+      toast.success('Make successfully saved')
+    }
+    await setSelectedRows([]);
+    await mutate();
+    await callback();
+    console.log("SAVE", make);
+  }
+
+  const handleDeleteClick = async (make: Make, callback: () => void) => {
+    toast.success('Make successfully deleted')
+    await setSelectedRows([]);
+    await mutate();
+    await callback();
+    console.log("DELETE", make)
   }
 
   return (
@@ -72,6 +95,8 @@ export const MakesTab: React.FC = () => {
         />
         <MakesTabForm
           selection={selectedMake}
+          onSave={handleSaveClick}
+          onDelete={handleDeleteClick}
         />
       </Stack>
     </SettingsTab>

@@ -3,7 +3,7 @@ import {Button, Fade, Stack, Typography} from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import {useForm, FormProvider} from "react-hook-form";
+import {useForm, FormProvider, FieldValues} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 
 import {Make} from "core/types/types";
@@ -13,9 +13,11 @@ import {MakeSchema} from "core/schemas/make";
 
 interface MakesTabFormProps {
   selection?: Make | null;
+  onSave: (make: Make, callback: () => void) => void | Promise<void>;
+  onDelete: (make: Make, callback: () => void) => void | Promise<void>;
 }
 
-export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
+export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection, onSave, onDelete}) => {
   const methods = useForm({mode: "onChange", resolver: yupResolver(MakeSchema)})
   const {handleSubmit, reset, formState: {errors, isValid}} = methods
 
@@ -24,13 +26,23 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
     reset(transformed, {keepDefaultValues: true})
   }, [selection, reset])
 
-  const handleSaveClick = async (values: any) => {
+  const handleSuccessSave = () => {
+    reset({}, { keepDefaultValues: true });
+  }
+
+  const handleSaveClick = async (values: FieldValues) => {
     const transformed = FormUtils.transformMomentsToDates(values);
-    console.log(transformed)
+    await onSave(transformed, handleSuccessSave);
+  }
+
+  const handleSuccessDeletion = () => {
+    reset({}, { keepDefaultValues: true })
   }
 
   const handleDeleteClick = async () => {
-    console.log("DELETE BUTTON CLICKED");
+    if (selection) {
+      await onDelete(selection, handleSuccessDeletion);
+    }
   }
 
   return (

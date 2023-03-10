@@ -1,5 +1,4 @@
 import {GetServerSidePropsContext, NextPageContext} from "next";
-import useImmutableSWR from 'swr/immutable'
 import useSWR from 'swr'
 import {SWRConfiguration} from "swr";
 
