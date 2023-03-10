@@ -1,5 +1,5 @@
 import React from "react";
-import {FormControl, InputLabel, MenuItem, Select, SelectProps} from "@mui/material";
+import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps} from "@mui/material";
 import {Controller, useFormContext} from "react-hook-form";
 
 interface FormInputDropdownProps extends SelectProps {
@@ -9,6 +9,7 @@ interface FormInputDropdownProps extends SelectProps {
   valueKey?: string;
   labelKey?: string;
   labelGetter?: (object: any) => void;
+  helperText?: string;
 }
 
 export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
@@ -20,6 +21,8 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
                                                                       labelGetter,
                                                                       size,
                                                                       defaultValue,
+                                                                      error,
+                                                                      helperText,
                                                                       ...other
                                                                     }) => {
   const {control} = useFormContext()
@@ -41,6 +44,7 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
           <Select
             {...field}
             {...other}
+            error={error}
           >
             {generateSingleOptions()}
           </Select>
@@ -48,6 +52,7 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
         control={control}
         name={name}
       />
+      <FormHelperText error={error}>{helperText}</FormHelperText>
     </FormControl>
   )
 }
