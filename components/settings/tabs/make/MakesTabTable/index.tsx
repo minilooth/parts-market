@@ -6,7 +6,7 @@ import {DataGridProps,} from "@mui/x-data-grid";
 
 import {DEFAULT_PAGE_SIZE_OPTIONS} from "core/consts/pagination";
 import {Make} from "core/types/types";
-import {CustomDataGrid} from "components/common/CustomDataGrid";
+import {CustomDataGrid} from "components/common/wrappers/CustomDataGrid";
 import {Page} from "core/types/common";
 
 interface MakesTabContentProps {
@@ -33,12 +33,12 @@ export const MakesTabTable: React.FC<MakesTabContentProps> = ({
                                                                 paginationModel
                                                               }) => {
   return (
-    <Stack height="100%" flex={1} minWidth="400px" rowGap={1}>
+    <Stack flex={1} minWidth="400px" spacing={1}>
       <Stack direction="row" alignItems="end">
         <Typography variant="subtitle1" component="span" lineHeight={1} flexGrow={1}>
           Makes that stored in database:
         </Typography>
-        <Stack direction="row" columnGap={1}>
+        <Stack direction="row" spacing={1}>
           <Fade in={!!selection} unmountOnExit>
             <Button variant="contained" startIcon={<ClearIcon/>} size="small" onClick={onUnselectClick}>
               Unselect

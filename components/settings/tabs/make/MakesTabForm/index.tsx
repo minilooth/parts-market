@@ -6,7 +6,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {useForm, FormProvider} from "react-hook-form";
 
 import {Make} from "core/types/types";
-import {FormInputText} from "components/common/FormInputText";
+import {FormInputText} from "components/common/form/FormInputText";
 import {FormUtils} from "core/utils/form";
 
 interface MakesTabFormProps {
@@ -32,13 +32,15 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
   }
 
   return (
-    <Stack height="100%" flex={1} minWidth="400px">
-      <Stack width="50%" direction="row" alignItems="end" height={32}>
-        <Typography variant="subtitle1" component="span" lineHeight={1} flexGrow={1}>
-          {selection ? 'Edit make' : 'Create new make'}
-        </Typography>
-      </Stack>
-      <Stack width="50%">
+    <Stack direction="row" flex={1} minWidth="400px">
+      <Stack flex={0.5}>
+
+        <Stack direction="row" alignItems="end" height={32}>
+          <Typography variant="subtitle1" lineHeight={1} flexGrow={1}>
+            {selection ? 'Edit an existing make' : 'Create new make'}
+          </Typography>
+        </Stack>
+
         <FormProvider {...methods}>
           <FormInputText
             size="small"
@@ -49,7 +51,8 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
             margin="normal"
           />
         </FormProvider>
-        <Stack direction="row" justifyContent="end" columnGap={1}>
+
+        <Stack direction="row" justifyContent="end" spacing={1}>
           <Fade in={!!selection} unmountOnExit>
             <Button
               variant="contained"
@@ -65,21 +68,17 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
             startIcon={<SaveIcon/>}
           >Save</Button>
         </Stack>
-      </Stack>
-      <Fade in={!!selection} unmountOnExit>
-        <Stack width="50%" paddingTop={2}>
-          <Typography
-            variant="caption"
-            component="span"
-            display="flex"
-            alignItems="center"
-            columnGap={1}
-          >
+
+        <Fade in={!!selection} unmountOnExit>
+          <Stack direction="row" alignItems="center" spacing={1} paddingTop={2}>
             <InfoOutlinedIcon fontSize="small" color="primary"/>
-            Please unselect item in table to return to creation mode
-          </Typography>
-        </Stack>
-      </Fade>
+            <Typography variant="caption">
+              Please click &quot;Unselect&quot; button or manually unselect item in table to return to creation mode
+            </Typography>
+          </Stack>
+        </Fade>
+
+      </Stack>
     </Stack>
   )
 }

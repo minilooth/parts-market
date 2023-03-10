@@ -3,7 +3,7 @@ import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar} fr
 import {useRouter} from "next/router";
 
 import {SideBarItem} from "core/types/side-bar";
-import {CustomListItemButton} from "components/common/CustomListItemButton";
+import {CustomListItemButton} from "components/common/wrappers/CustomListItemButton";
 
 interface SideBarProps {
   items: Array<Array<SideBarItem>>,

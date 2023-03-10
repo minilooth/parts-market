@@ -1,12 +1,12 @@
-import {Divider} from "@mui/material";
 import React from "react";
-import {Settings as SettingsIcon} from "@mui/icons-material"
+import {Divider, Typography} from "@mui/material";
+import SettingsIcon from '@mui/icons-material/Settings';
 import {useRouter} from "next/router";
 
 import {SettingsMenuItem, SettingsTab} from "core/types/settings";
-import {Page} from "components/common/Page";
-import {PageHeader} from "components/common/PageHeader";
-import {PageContent} from "components/common/PageContent";
+import {Page} from "components/common/page/Page";
+import {PageHeader} from "components/common/page/PageHeader";
+import {PageContent} from "components/common/page/PageContent";
 import {SettingsMenu} from "components/settings/content/SettingsMenu";
 import {SettingsContent} from "components/settings/content/SettingsContent";
 
@@ -17,7 +17,8 @@ interface SettingsProps {
 
 export const Settings: React.FC<SettingsProps> = ({menuWidth, items}) => {
   const router = useRouter();
-  const activeTab = router.query.tab as SettingsTab || SettingsTab.MAKES;
+  const { query } = router;
+  const activeTab = query.tab as SettingsTab || SettingsTab.MAKES;
 
   const handleActiveTabChange = async (tab: SettingsTab) => {
     await router.push({
@@ -28,23 +29,12 @@ export const Settings: React.FC<SettingsProps> = ({menuWidth, items}) => {
 
   return (
     <Page>
-      <PageHeader
-        title="Settings"
-        Icon={SettingsIcon}
-        iconProps={{
-          fontSize: "large"
-        }}
-        typographyProps={{
-          variant: "h4",
-          fontWeight: 500,
-          sx: {
-            display: 'flex',
-            alignItems: 'center',
-            columnGap: 1,
-            flexGrow: 1
-          }
-        }}
-      />
+      <PageHeader>
+        <SettingsIcon fontSize="large"/>
+        <Typography variant="h4" fontWeight={500}>
+          Settings
+        </Typography>
+      </PageHeader>
       <PageContent>
         <SettingsMenu
           items={items}

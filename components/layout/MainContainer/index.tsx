@@ -20,7 +20,7 @@ export const MainContainer: React.FC<MainContainerProps> = ({children}) => {
           sx={{
             flexGrow: 1,
             display: 'flex',
-            height: 'calc(100vh - 64px - 64px - 64px)',
+            height: 'calc(100vh - 64px - 64px)',
             paddingTop: 1,
             paddingBottom: 2,
             paddingLeft: 3,

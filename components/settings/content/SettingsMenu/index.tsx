@@ -1,7 +1,7 @@
 import React from "react";
 import {Divider, List, ListItem, ListItemText, Stack} from "@mui/material";
 
-import {CustomListItemButton} from "components/common/CustomListItemButton";
+import {CustomListItemButton} from "components/common/wrappers/CustomListItemButton";
 import {SettingsMenuItem, SettingsTab} from "core/types/settings";
 
 interface SettingsMenuProps {
@@ -13,7 +13,7 @@ interface SettingsMenuProps {
 
 export const SettingsMenu: React.FC<SettingsMenuProps> = ({items, onTabChange, activeTab, width}) => {
   return (
-    <Stack minWidth={width} width={width} bgcolor="background.paper">
+    <Stack flexBasis={width} bgcolor="background.paper" sx={{ overflowY: 'auto' }}>
       {items.map((array, index) => (
         <React.Fragment key={index}>
           {!!index && <Divider/>}
