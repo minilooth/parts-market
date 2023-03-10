@@ -2,12 +2,11 @@ import React from "react";
 import {ListItemButton} from "@mui/material";
 
 interface CustomListItemButtonProps {
-  children: NonNullable<React.ReactNode>;
   onClick: (_: React.MouseEvent) => void
   selected: boolean;
 }
 
-export const CustomListItemButton: React.FC<CustomListItemButtonProps> = ({children, onClick, selected}) => {
+export const CustomListItemButton: React.FC<React.PropsWithChildren<CustomListItemButtonProps>> = ({children, onClick, selected}) => {
   return (
     <ListItemButton
       onClick={onClick}

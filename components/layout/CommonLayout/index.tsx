@@ -1,12 +1,11 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import Head from 'next/head'
 
 interface CommonLayoutProps {
-  children: ReactNode;
   title?: string;
 }
 
-export const CommonLayout: React.FC<CommonLayoutProps> = ({children, title = 'Next App'}) => {
+export const CommonLayout: React.FC<React.PropsWithChildren<CommonLayoutProps>> = ({children, title = 'Next App'}) => {
   return (
     <>
       <Head>

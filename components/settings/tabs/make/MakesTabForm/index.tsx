@@ -4,30 +4,32 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {useForm, FormProvider} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 import {Make} from "core/types/types";
 import {FormInputText} from "components/common/form/FormInputText";
 import {FormUtils} from "core/utils/form";
+import {MakeSchema} from "core/schemas/make";
 
 interface MakesTabFormProps {
   selection?: Make | null;
 }
 
 export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
-  const methods = useForm({mode: "onChange"})
-  const {handleSubmit, reset} = methods
+  const methods = useForm({mode: "onChange", resolver: yupResolver(MakeSchema)})
+  const {handleSubmit, reset, formState: {errors, isValid}} = methods
 
   React.useEffect(() => {
     const transformed = FormUtils.transformDatesToMoments(selection || {});
     reset(transformed, {keepDefaultValues: true})
   }, [selection, reset])
 
-  const handleSaveClick = (values: any) => {
+  const handleSaveClick = async (values: any) => {
     const transformed = FormUtils.transformMomentsToDates(values);
     console.log(transformed)
   }
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
     console.log("DELETE BUTTON CLICKED");
   }
 
@@ -49,6 +51,8 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
             label="Name"
             placeholder="Please enter name"
             margin="normal"
+            error={!!errors.name}
+            helperText={errors.name?.message as string}
           />
         </FormProvider>
 
@@ -66,6 +70,7 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection}) => {
             variant="contained"
             size="small"
             startIcon={<SaveIcon/>}
+            disabled={!isValid}
           >Save</Button>
         </Stack>
 
