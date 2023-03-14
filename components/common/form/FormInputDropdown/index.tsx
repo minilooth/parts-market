@@ -82,6 +82,7 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
               }
               controllerOnChange(event, child)
             }}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
             endAdornment={
               <IconButton
                 onClick={onResetClick}

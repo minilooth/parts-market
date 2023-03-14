@@ -1,4 +1,4 @@
-import {Entity} from "core/types/common";
+import {Entity} from "@core/types/common";
 
 export interface Authority {
   name: string;
@@ -20,4 +20,11 @@ export interface Make extends Entity {
 export interface Model extends Entity {
   name: string;
   makeId: number;
+}
+
+export interface Generation extends Entity {
+  name: string;
+  modelId: number;
+  issuedFrom: number;
+  issuedTo: number;
 }

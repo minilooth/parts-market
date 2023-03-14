@@ -1,6 +1,7 @@
 import {AxiosInstance} from "axios";
-import {Make} from "core/types";
-import {Page, Pageable} from "../../types/common";
+
+import {Make} from "@core/types";
+import {Page, Pageable} from "@core/types/common";
 
 export const MakeApi = (instance: AxiosInstance) => ({
 

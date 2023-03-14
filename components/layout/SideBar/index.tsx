@@ -2,8 +2,8 @@ import React from "react"
 import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar} from "@mui/material"
 import {useRouter} from "next/router";
 
-import {SideBarItem} from "core/types/side-bar";
-import {CustomListItemButton} from "components/common/wrappers/CustomListItemButton";
+import {SideBarItem} from "@core/types/side-bar";
+import {CustomListItemButton} from "@components/common/wrappers/CustomListItemButton";
 
 interface SideBarProps {
   items: Array<Array<SideBarItem>>,

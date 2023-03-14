@@ -4,23 +4,23 @@ import {useRouter} from "next/router";
 import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from "@mui/x-data-grid";
 import {toast} from "react-toastify";
 
-import {SettingsTab} from "components/settings/tabs/wrapper/SettingsTab";
-import {MODELS_COLUMNS} from "core/consts/settings";
-import {ModelsTabTable} from "components/settings/tabs/model/ModelsTabTable";
-import {ModelsTabForm} from "components/settings/tabs/model/ModelsTabForm";
-import {PageableUtils} from "core/utils/pageable";
-import {INITIAL_PAGE, INITIAL_PAGE_SIZE} from "core/consts/pagination";
-import {useModels} from "core/hooks/useModels";
-import {Model} from "core/types";
-import {Optional} from "core/types/common";
-import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from "core/consts/swr";
-import {useMutate} from "core/hooks/entities/useMutate";
+import {SettingsTab} from "@components/settings/tabs/wrapper/SettingsTab";
+import {ModelsColumns} from "@core/consts/settings";
+import {ModelsTabTable} from "@components/settings/tabs/model/ModelsTabTable";
+import {ModelsTabForm} from "@components/settings/tabs/model/ModelsTabForm";
+import {PageableUtils} from "@core/utils/pageable";
+import {InitialPage, InitialPageSize} from "@core/consts/pagination";
+import {useModels} from "@core/hooks/entities/useModels";
+import {Model} from "@core/types";
+import {Optional} from "@core/types/common";
+import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from "@core/consts/swr";
+import {useMutate} from "@core/hooks/useMutate";
 
 export const ModelsTab: React.FC = () => {
   const router = useRouter();
 
-  const page = Number.parseInt(router.query.page as string) || INITIAL_PAGE;
-  const size = Number.parseInt(router.query.size as string) || INITIAL_PAGE_SIZE;
+  const page = Number.parseInt(router.query.page as string) || InitialPage;
+  const size = Number.parseInt(router.query.size as string) || InitialPageSize;
   const makeId = Number.parseInt(router.query.makeId as string);
 
   const mutate = useMutate()
@@ -92,7 +92,7 @@ export const ModelsTab: React.FC = () => {
         <ModelsTabTable
           selection={selection}
           rows={models}
-          columns={MODELS_COLUMNS}
+          columns={ModelsColumns}
           paginationModel={{page: page - 1, pageSize: size}}
           rowSelectionModel={selectedIds}
           onRefreshClick={handleRefreshClick}

@@ -3,7 +3,7 @@ import {NextPage} from "next";
 import {CommonLayout} from "components/layout/CommonLayout";
 import {MainContainer} from "components/layout/MainContainer";
 import {withAuthSSP} from "core/withAuthSSP";
-import {ADMIN, USER} from "core/consts/authorities";
+import {Admin, User} from "core/consts/authorities";
 
 const HomePage: NextPage = () => {
   return (
@@ -22,7 +22,7 @@ export const getServerSideProps = withAuthSSP(async () => {
 }, {
   authorizationNeeded: true,
   canAccessAuthorized: true,
-  authorities: [ADMIN, USER]
+  authorities: [Admin, User]
 })
 
 export default HomePage;

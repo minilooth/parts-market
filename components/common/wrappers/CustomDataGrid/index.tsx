@@ -1,10 +1,10 @@
 import React from "react"
 import {DataGrid, DataGridProps} from "@mui/x-data-grid";
-
-import {CustomNoRowsOverlay} from "components/common/wrappers/CustomNoRowsOverlay";
-import {Page} from "core/types/common";
-import {PageableUtils} from "core/utils/pageable";
 import {StaticImageData} from "next/image";
+
+import {CustomNoRowsOverlay} from "@components/common/wrappers/CustomNoRowsOverlay";
+import {Page} from "@core/types/common";
+import {PageableUtils} from "@core/utils/pageable";
 
 interface CustomDataGridProps {
   noRowsOverlayText?: string;

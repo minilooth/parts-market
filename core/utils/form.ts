@@ -10,7 +10,10 @@ export class FormUtils {
         };
       }
 
-      if (moment(object[key], moment.ISO_8601, true).isValid()) {
+      const isString = typeof object[key] === 'string';
+      const isDate = Object.prototype.toString.call(object[key]) === '[object Date]' && !isNaN(object[key]);
+
+      if ((isString || isDate) && moment(object[key], moment.ISO_8601, true).isValid()) {
         return {
           ...accumulator,
           [key]: moment(object[key])

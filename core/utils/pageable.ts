@@ -1,5 +1,5 @@
-import {Page, Pageable} from "../types/common";
-import {INITIAL_PAGE, INITIAL_PAGE_SIZE} from "../consts/pagination";
+import {Page, Pageable} from "@core/types/common";
+import {InitialPage, InitialPageSize} from "@core/consts/pagination";
 
 export class PageableUtils {
 
@@ -9,8 +9,8 @@ export class PageableUtils {
       totalElements: 0,
       totalPages: 0,
       pageable: {
-        page: INITIAL_PAGE,
-        size: INITIAL_PAGE_SIZE
+        page: InitialPage,
+        size: InitialPageSize
       },
       first: true,
       last: true,

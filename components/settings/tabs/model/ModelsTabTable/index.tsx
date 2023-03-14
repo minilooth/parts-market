@@ -2,36 +2,23 @@ import React from "react"
 import {Button, Fade, SelectChangeEvent, Stack, Typography} from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import {DataGridProps} from "@mui/x-data-grid";
 import {FormProvider, useForm} from "react-hook-form";
 import {useRouter} from 'next/router';
 
-import {CustomDataGrid} from "components/common/wrappers/CustomDataGrid";
-import {DEFAULT_PAGE_SIZE_OPTIONS} from "core/consts/pagination";
-import {Model} from "core/types";
-import {Page} from "core/types/common";
-import {FormInputDropdown} from "components/common/form/FormInputDropdown";
-import {useMakes} from "core/hooks/entities/useMakes";
-import {PageableUtils} from "core/utils/pageable";
-import {DefaultMutateConfiguration, MakesSWRKey} from "core/consts/swr";
-import {useMutate} from "core/hooks/entities/useMutate";
+import {CustomDataGrid} from "@components/common/wrappers/CustomDataGrid";
+import {DefaultPageSizeOptions} from "@core/consts/pagination";
+import {Model} from "@core/types";
+import {FormInputDropdown} from "@components/common/form/FormInputDropdown";
+import {useMakes} from "@core/hooks/entities/useMakes";
+import {PageableUtils} from "@core/utils/pageable";
+import {DefaultMutateConfiguration, MakesSWRKey} from "@core/consts/swr";
+import {useMutate} from "@core/hooks/useMutate";
+import {SettingsTabTableProps} from "@core/types/settings";
 
-import NotFound from "public/web-page.png"
-import PleaseSelect from "public/cinema-seat.png";
+import NotFound from "@public/web-page.png"
+import PleaseSelect from "@public/cinema-seat.png";
 
-interface ModelsTabContentProps {
-  selection?: Model | null;
-  onRefreshClick: (_: React.MouseEvent) => void;
-  onUnselectClick: (_: React.MouseEvent) => void;
-  rows: Page<Model>;
-  columns: DataGridProps['columns'];
-  onPaginationChange: DataGridProps['onPaginationModelChange'];
-  onSelectionChange: DataGridProps['onRowSelectionModelChange'];
-  rowSelectionModel: DataGridProps['rowSelectionModel'];
-  paginationModel: DataGridProps['paginationModel'];
-}
-
-export const ModelsTabTable: React.FC<ModelsTabContentProps> = ({
+export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
                                                                   selection,
                                                                   onRefreshClick,
                                                                   onUnselectClick,
@@ -46,16 +33,18 @@ export const ModelsTabTable: React.FC<ModelsTabContentProps> = ({
   const {makeId} = router.query;
 
   const methods = useForm({mode: "onChange"})
-  const {reset, watch} = methods
+  const {watch, setValue} = methods
 
   const mutate = useMutate();
   const makes = useMakes();
 
+  const selectedMakeId = watch("makeId");
+
   React.useEffect(() => {
     if (makes && makes.content.length > 0) {
-      reset({makeId})
+      setValue("makeId", makeId);
     }
-  }, [makeId, reset, makes])
+  }, [makeId, makes, setValue])
 
   React.useEffect(() => {
     mutate(MakesSWRKey)
@@ -75,6 +64,7 @@ export const ModelsTabTable: React.FC<ModelsTabContentProps> = ({
   }
 
   const handleMakeChange = async (makeId?: string) => {
+    setValue("makeId", makeId)
     await router.push({
       pathname: router.pathname,
       query: {
@@ -85,16 +75,14 @@ export const ModelsTabTable: React.FC<ModelsTabContentProps> = ({
   }
 
   const resolveNoRowsOverlayLabel = () => {
-    const makeId = watch("makeId");
-    if (!makeId) {
+    if (!selectedMakeId) {
       return 'Please select make'
     }
     return 'No data found in database';
   }
 
   const resolveNoRowsOverlayImage = () => {
-    const makeId = watch("makeId");
-    if (!makeId) {
+    if (!selectedMakeId) {
       return PleaseSelect;
     }
     return NotFound;
@@ -141,7 +129,7 @@ export const ModelsTabTable: React.FC<ModelsTabContentProps> = ({
         onRowSelectionModelChange={onSelectionChange}
         rowSelectionModel={rowSelectionModel}
         paginationModel={paginationModel}
-        pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
+        pageSizeOptions={DefaultPageSizeOptions}
         noRowsOverlayText={resolveNoRowsOverlayLabel()}
         noRowsOverlayImage={resolveNoRowsOverlayImage()}
       />

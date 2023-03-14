@@ -1,23 +1,29 @@
-import React from "react"
-import {Button, Fade, Stack, Typography} from "@mui/material"
+import React from 'react';
+import {Button, Fade, Stack, Typography} from "@mui/material";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {FieldValues, FormProvider, useForm} from "react-hook-form";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {yupResolver} from "@hookform/resolvers/yup";
-import {FieldValues, FormProvider, useForm} from "react-hook-form";
+import {useRouter} from "next/router";
 
-import {Model} from "@core/types";
-import {FormUtils} from "@core/utils/form";
-import {FormInputText} from "@components/common/form/FormInputText";
-import {ModelSchema} from "@core/schemas/model";
-import {FormInputDropdown} from "@components/common/form/FormInputDropdown";
-import {useMakes} from "@core/hooks/entities/useMakes";
+import {Generation} from "@core/types";
 import {SettingsTabFormProps} from "@core/types/settings";
+import {FormUtils} from "@core/utils/form";
+import {FormInputDropdown} from "@components/common/form/FormInputDropdown";
+import {FormInputText} from "@components/common/form/FormInputText";
+import {useModels} from "@core/hooks/entities/useModels";
+import {GenerationSchema} from "@core/schemas/generation";
+import {YearsAscending, YearsDescending} from "@core/consts/settings";
 
-export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection, onSave, onDelete}) => {
-  const makes = useMakes();
+export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({selection, onSave, onDelete}) => {
+  const router = useRouter();
+  const {query} = router;
 
-  const methods = useForm({mode: "onChange", resolver: yupResolver(ModelSchema)})
+  const makeId = Number.parseInt(query.makeId as string) || undefined;
+
+  const models = useModels(makeId);
+  const methods = useForm({mode: "onChange", resolver: yupResolver(GenerationSchema)})
   const {handleSubmit, reset, formState: {errors, isValid}, setValue} = methods
 
   React.useEffect(() => {
@@ -44,8 +50,16 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
     }
   }
 
-  const handleResetClick = () => {
-    setValue("makeId", undefined, {shouldValidate: true})
+  const handleModelResetClick = () => {
+    setValue("modelId", undefined, {shouldValidate: true})
+  }
+
+  const handleIssuedFromResetClick = () => {
+    setValue("issuedFrom", undefined, {shouldValidate: true})
+  }
+
+  const handleIssuedToResetClick = () => {
+    setValue("issuedTo", undefined, {shouldValidate: true})
   }
 
   return (
@@ -54,23 +68,24 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
 
         <Stack direction="row" alignItems="end" height={32}>
           <Typography variant="subtitle1" lineHeight={1} flexGrow={1}>
-            {selection ? 'Edit an existing model' : 'Create new model'}
+            {selection ? 'Edit an existing generation' : 'Create new generation'}
           </Typography>
         </Stack>
 
         <FormProvider {...methods}>
           <FormInputDropdown
             size="small"
-            name="makeId"
+            name="modelId"
             defaultValue=""
-            options={makes.content}
+            options={models.content}
             labelKey="name"
             valueKey="id"
-            label="Make"
+            label="Model"
             margin="normal"
-            error={!!errors.makeId}
-            helperText={errors.makeId?.message as string}
-            onResetClick={handleResetClick}
+            disabled={!makeId}
+            error={!!errors.modelId}
+            helperText={errors.modelId?.message as string}
+            onResetClick={handleModelResetClick}
           />
           <FormInputText
             size="small"
@@ -81,6 +96,32 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
             margin="normal"
             error={!!errors.name}
             helperText={errors.name?.message as string}
+          />
+          <FormInputDropdown
+            size="small"
+            name="issuedFrom"
+            defaultValue=""
+            options={YearsAscending}
+            labelKey="value"
+            valueKey="value"
+            label="Issued From"
+            margin="normal"
+            error={!!errors.issuedFrom}
+            helperText={errors.issuedFrom?.message as string}
+            onResetClick={handleIssuedFromResetClick}
+          />
+          <FormInputDropdown
+            size="small"
+            name="issuedTo"
+            defaultValue=""
+            options={YearsDescending}
+            labelKey="value"
+            valueKey="value"
+            label="Issued To"
+            margin="normal"
+            error={!!errors.issuedTo}
+            helperText={errors.issuedTo?.message as string}
+            onResetClick={handleIssuedToResetClick}
           />
         </FormProvider>
 
@@ -114,4 +155,4 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
       </Stack>
     </Stack>
   )
-}
+};

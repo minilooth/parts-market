@@ -1,4 +1,3 @@
-import {SideBarItem} from "core/types/side-bar";
 import {
   BarChart,
   Build,
@@ -9,61 +8,63 @@ import {
   Settings,
   Work
 } from "@mui/icons-material";
+
+import {SideBarItem} from "@core/types/side-bar";
 import {
-  CHARTS_ROUTE,
-  COMPANY_ROUTE,
-  HOME_ROUTE,
-  MANUFACTURERS_ROUTE,
-  PROVIDERS_ROUTE,
-  SETTINGS_ROUTE,
-  USERS_ROUTE, VEHICLES_ROUTE
-} from "core/consts/routes";
+  ChartsRoute,
+  CompanyRoute,
+  HomeRoute,
+  ManufacturersRoute,
+  ProvidersRoute,
+  SettingsRoute,
+  UsersRoute, VehiclesRoute
+} from "@core/consts/routes";
 
-export const SIDE_BAR_WIDTH = 225;
+export const SideBarWidth = 225;
 
-export const SIDE_BAR_ITEMS: Array<Array<SideBarItem>> = [
+export const SideBarItems: Array<Array<SideBarItem>> = [
   [
     {
       title: 'Parts',
       Icon: Build,
-      href: HOME_ROUTE
+      href: HomeRoute
     },
     {
       title: 'Users',
       Icon: Group,
-      href: USERS_ROUTE
+      href: UsersRoute
     },
     {
       title: 'Manufacturers',
       Icon: PrecisionManufacturing,
-      href: MANUFACTURERS_ROUTE
+      href: ManufacturersRoute
     },
     {
       title: 'Providers',
       Icon: LocalShipping,
-      href: PROVIDERS_ROUTE
+      href: ProvidersRoute
     },
     {
       title: 'Vehicles',
       Icon: DriveEta,
-      href: VEHICLES_ROUTE
+      href: VehiclesRoute
     }
   ],
   [
     {
       title: 'Settings',
       Icon: Settings,
-      href: SETTINGS_ROUTE
+      href: SettingsRoute
     },
     {
       title: 'Company',
       Icon: Work,
-      href: COMPANY_ROUTE
+      href: CompanyRoute
     },
     {
       title: 'Charts',
       Icon: BarChart,
-      href: CHARTS_ROUTE
+      href: ChartsRoute
     }
   ]
 ]

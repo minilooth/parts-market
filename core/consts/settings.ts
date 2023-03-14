@@ -1,10 +1,11 @@
-import {SettingsMenuItem, SettingsTab} from "../types/settings";
 import {GridColDef} from "@mui/x-data-grid";
 import moment from "moment";
 
-export const SETTINGS_MENU_WIDTH = 225
+import {SettingsMenuItem, SettingsTab} from "@core/types/settings";
 
-export const SETTINGS_MENU_ITEMS: Array<Array<SettingsMenuItem>> = [
+export const SettingsMenuWidth = 225
+
+export const SettingsMenuItems: Array<Array<SettingsMenuItem>> = [
   [
     {
       title: 'Makes',
@@ -63,7 +64,7 @@ export const SETTINGS_MENU_ITEMS: Array<Array<SettingsMenuItem>> = [
   ]
 ]
 
-export const MAKES_COLUMNS: GridColDef[] = [
+export const MakesColumns: GridColDef[] = [
   {
     field: 'id',
     headerName: 'ID',
@@ -90,7 +91,7 @@ export const MAKES_COLUMNS: GridColDef[] = [
   },
 ]
 
-export const MODELS_COLUMNS: GridColDef[] = [
+export const ModelsColumns: GridColDef[] = [
   {
     field: 'id',
     headerName: 'ID',
@@ -116,3 +117,44 @@ export const MODELS_COLUMNS: GridColDef[] = [
     valueFormatter: ({value}) => value && moment(value).fromNow()
   },
 ]
+
+export const GenerationsColumns: GridColDef[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    flex: 0.1,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: 'name',
+    headerName: 'Name',
+    flex: 0.18333
+  },
+  {
+    field: 'issuedFrom',
+    headerName: 'Issued From',
+    flex: 0.18333
+  },
+  {
+    field: 'issuedTo',
+    headerName: 'Issued To',
+    flex: 0.18333
+  },
+  {
+    field: 'createdAt',
+    headerName: 'Created',
+    flex: 0.18333,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Updated',
+    flex: 0.18333,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+]
+
+export const YearsAscending = Array.from(Array(new Date().getFullYear() - 1960 + 1).keys())
+  .map(value => ({ value: value + 1960 }));
+export const YearsDescending = [...YearsAscending].reverse();

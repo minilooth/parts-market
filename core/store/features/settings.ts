@@ -1,6 +1,6 @@
 import {createSelector, createSlice} from "@reduxjs/toolkit";
 
-import {AppState} from "core/store";
+import {AppState} from "@core/store";
 
 export type SettingsState = {
   menuExpanded: boolean;

@@ -2,8 +2,9 @@ import React from "react";
 import {IconButton, Stack, Typography} from "@mui/material";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {selectIsMenuExpanded, toggleMenuExpansion} from "../../../../../core/store/features/settings";
-import {useAppDispatch, useAppSelector} from "../../../../../core/store/hooks";
+
+import {selectIsMenuExpanded, toggleMenuExpansion} from "@core/store/features/settings";
+import {useAppDispatch, useAppSelector} from "@core/store/hooks";
 
 interface SettingsTabProps {
   title: string;

@@ -9,7 +9,7 @@ import {Provider} from "react-redux";
 import {SWRConfig} from 'swr';
 
 import createEmotionCache from "core/createEmotionCache";
-import {AXIOS_COMPLETE_EVENT_NAME, AXIOS_LOADING_EVENT_NAME} from "core/consts/axios";
+import {AxiosCompleteEventName, AxiosLoadingEventName} from "core/consts/axios";
 import store from "core/store";
 import {Toast} from "core/types/common";
 
@@ -36,11 +36,11 @@ const CustomApp = ({Component, emotionCache = clientSideEmotionCache, pageProps}
   const {fallback, toasts, ...props} = pageProps;
 
   React.useEffect(() => {
-    window.addEventListener(AXIOS_LOADING_EVENT_NAME, handleAxiosLoading);
-    window.addEventListener(AXIOS_COMPLETE_EVENT_NAME, handleAxiosComplete);
+    window.addEventListener(AxiosLoadingEventName, handleAxiosLoading);
+    window.addEventListener(AxiosCompleteEventName, handleAxiosComplete);
     return () => {
-      window.removeEventListener(AXIOS_LOADING_EVENT_NAME, handleAxiosLoading);
-      window.removeEventListener(AXIOS_COMPLETE_EVENT_NAME, handleAxiosComplete);
+      window.removeEventListener(AxiosLoadingEventName, handleAxiosLoading);
+      window.removeEventListener(AxiosCompleteEventName, handleAxiosComplete);
     }
   }, [])
 

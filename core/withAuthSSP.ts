@@ -1,8 +1,8 @@
 import {GetServerSidePropsContext, GetServerSidePropsResult} from "next";
 
-import {User} from "core/types";
-import {Api} from "core/api";
-import {SessionSWRKey} from "./consts/swr";
+import {User} from "@core/types";
+import {Api} from "@core/api";
+import {SessionSWRKey} from "@core/consts/swr";
 
 type IncomingGSSP<P> = (ctx: GetServerSidePropsContext, user?: User) => Promise<P>;
 

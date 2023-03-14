@@ -2,28 +2,15 @@ import React from "react"
 import {Button, Fade, Stack, Typography} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ClearIcon from '@mui/icons-material/Clear';
-import {DataGridProps,} from "@mui/x-data-grid";
 
-import {DEFAULT_PAGE_SIZE_OPTIONS} from "core/consts/pagination";
-import {Make} from "core/types";
-import {CustomDataGrid} from "components/common/wrappers/CustomDataGrid";
-import {Page} from "core/types/common";
+import {DefaultPageSizeOptions} from "@core/consts/pagination";
+import {Make} from "@core/types";
+import {CustomDataGrid} from "@components/common/wrappers/CustomDataGrid";
+import {SettingsTabTableProps} from "@core/types/settings";
 
-import NotFound from "public/web-page.png"
+import NotFound from "@public/web-page.png"
 
-interface MakesTabContentProps {
-  selection?: Make | null;
-  onRefreshClick: (_: React.MouseEvent) => void;
-  onUnselectClick: (_: React.MouseEvent) => void;
-  rows: Page<Make>;
-  columns: DataGridProps['columns'];
-  onPaginationChange: DataGridProps['onPaginationModelChange'];
-  onSelectionChange: DataGridProps['onRowSelectionModelChange'];
-  rowSelectionModel: DataGridProps['rowSelectionModel'];
-  paginationModel: DataGridProps['paginationModel'];
-}
-
-export const MakesTabTable: React.FC<MakesTabContentProps> = ({
+export const MakesTabTable: React.FC<SettingsTabTableProps<Make>> = ({
                                                                 selection,
                                                                 onRefreshClick,
                                                                 onUnselectClick,
@@ -58,7 +45,7 @@ export const MakesTabTable: React.FC<MakesTabContentProps> = ({
         onRowSelectionModelChange={onSelectionChange}
         rowSelectionModel={rowSelectionModel}
         paginationModel={paginationModel}
-        pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
+        pageSizeOptions={DefaultPageSizeOptions}
         noRowsOverlayText="No data found in database"
         noRowsOverlayImage={NotFound}
       />

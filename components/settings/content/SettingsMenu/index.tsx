@@ -1,10 +1,10 @@
 import React from "react";
 import {Divider, List, ListItem, ListItemText, Stack} from "@mui/material";
 
-import {CustomListItemButton} from "components/common/wrappers/CustomListItemButton";
-import {SettingsMenuItem, SettingsTab} from "core/types/settings";
-import {selectIsMenuExpanded} from "../../../../core/store/features/settings";
-import {useAppSelector} from "../../../../core/store/hooks";
+import {CustomListItemButton} from "@components/common/wrappers/CustomListItemButton";
+import {SettingsMenuItem, SettingsTab} from "@core/types/settings";
+import {selectIsMenuExpanded} from "@core/store/features/settings";
+import {useAppSelector} from "@core/store/hooks";
 
 interface SettingsMenuProps {
   items: Array<Array<SettingsMenuItem>>;

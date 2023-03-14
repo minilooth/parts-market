@@ -1,6 +1,7 @@
 import {AxiosInstance} from "axios";
-import {Page, Pageable} from "../../types/common";
-import {Model} from "../../types";
+
+import {Page, Pageable} from "@core/types/common";
+import {Model} from "@core/types";
 
 export const ModelApi = (instance: AxiosInstance) => ({
 

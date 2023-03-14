@@ -4,23 +4,23 @@ import {Stack} from "@mui/material";
 import {toast} from "react-toastify";
 import {useRouter} from "next/router";
 
-import {MAKES_COLUMNS} from "core/consts/settings";
-import {INITIAL_PAGE, INITIAL_PAGE_SIZE} from "core/consts/pagination";
-import {SettingsTab} from "components/settings/tabs/wrapper/SettingsTab";
-import {MakesTabForm} from "components/settings/tabs/make/MakesTabForm";
-import {MakesTabTable} from "components/settings/tabs/make/MakesTabTable";
-import {PageableUtils} from "core/utils/pageable";
-import {useMakes} from "core/hooks/entities/useMakes";
-import {Make} from "core/types";
-import {Optional} from "core/types/common";
-import {DefaultMutateConfiguration, MakesSWRKey} from "core/consts/swr";
-import {useMutate} from "core/hooks/entities/useMutate";
+import {MakesColumns} from "@core/consts/settings";
+import {InitialPage, InitialPageSize} from "@core/consts/pagination";
+import {SettingsTab} from "@components/settings/tabs/wrapper/SettingsTab";
+import {MakesTabForm} from "@components/settings/tabs/make/MakesTabForm";
+import {MakesTabTable} from "@components/settings/tabs/make/MakesTabTable";
+import {PageableUtils} from "@core/utils/pageable";
+import {useMakes} from "@core/hooks/entities/useMakes";
+import {Make} from "@core/types";
+import {Optional} from "@core/types/common";
+import {DefaultMutateConfiguration, MakesSWRKey} from "@core/consts/swr";
+import {useMutate} from "@core/hooks/useMutate";
 
 export const MakesTab: React.FC = () => {
   const router = useRouter();
 
-  const page = Number.parseInt(router.query.page as string) || INITIAL_PAGE;
-  const size = Number.parseInt(router.query.size as string) || INITIAL_PAGE_SIZE;
+  const page = Number.parseInt(router.query.page as string) || InitialPage;
+  const size = Number.parseInt(router.query.size as string) || InitialPageSize;
 
   const mutate = useMutate();
   const makes = useMakes({page, size});
@@ -90,7 +90,7 @@ export const MakesTab: React.FC = () => {
         <MakesTabTable
           selection={selection}
           rows={makes}
-          columns={MAKES_COLUMNS}
+          columns={MakesColumns}
           paginationModel={{page: page - 1, pageSize: size}}
           rowSelectionModel={selectedIds}
           onRefreshClick={handleRefreshClick}

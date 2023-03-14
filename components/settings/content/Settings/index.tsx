@@ -3,12 +3,12 @@ import {Divider, Typography} from "@mui/material";
 import SettingsIcon from '@mui/icons-material/Settings';
 import {useRouter} from "next/router";
 
-import {SettingsMenuItem, SettingsTab} from "core/types/settings";
-import {Page} from "components/common/page/Page";
-import {PageHeader} from "components/common/page/PageHeader";
-import {PageContent} from "components/common/page/PageContent";
-import {SettingsMenu} from "components/settings/content/SettingsMenu";
-import {SettingsContent} from "components/settings/content/SettingsContent";
+import {SettingsMenuItem, SettingsTab} from "@core/types/settings";
+import {Page} from "@components/common/page/Page";
+import {PageHeader} from "@components/common/page/PageHeader";
+import {PageContent} from "@components/common/page/PageContent";
+import {SettingsMenu} from "@components/settings/content/SettingsMenu";
+import {SettingsContent} from "@components/settings/content/SettingsContent";
 
 interface SettingsProps {
   menuWidth: number;

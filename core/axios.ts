@@ -5,8 +5,9 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig
 } from "axios";
-import {AXIOS_COMPLETE_EVENT_NAME, AXIOS_LOADING_EVENT_NAME} from "core/consts/axios";
-import {ClientUtils} from "core/utils/client";
+
+import {AxiosCompleteEventName, AxiosLoadingEventName} from "@core/consts/axios";
+import {ClientUtils} from "@core/utils/client";
 
 declare module "axios" {
   interface InternalAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
@@ -40,7 +41,7 @@ const requestSuccessInterceptor = (config: InternalAxiosRequestConfig) => {
     return config;
   }
 
-  window.dispatchEvent(new Event(AXIOS_LOADING_EVENT_NAME));
+  window.dispatchEvent(new Event(AxiosLoadingEventName));
   config.metadata = {startTime: new Date()}
   return config;
 }
@@ -55,10 +56,10 @@ const responseSuccessInterceptor = (response: AxiosResponse) => {
   }
 
   if (requestDuration <= BACKDROP_MIN_VISIBLE_DURATION_IN_MS) {
-    setTimeout(() => window.dispatchEvent(new Event(AXIOS_COMPLETE_EVENT_NAME)),
+    setTimeout(() => window.dispatchEvent(new Event(AxiosCompleteEventName)),
       BACKDROP_MIN_VISIBLE_DURATION_IN_MS - requestDuration)
   } else {
-    window.dispatchEvent(new Event(AXIOS_COMPLETE_EVENT_NAME))
+    window.dispatchEvent(new Event(AxiosCompleteEventName))
   }
   return response;
 }
@@ -68,7 +69,7 @@ const errorInterceptor = (error: Error) => {
     return Promise.reject(error);
   }
 
-  setTimeout(() => window.dispatchEvent(new Event(AXIOS_COMPLETE_EVENT_NAME)),
+  setTimeout(() => window.dispatchEvent(new Event(AxiosCompleteEventName)),
     BACKDROP_MIN_VISIBLE_DURATION_IN_MS)
   return Promise.reject(error);
 }

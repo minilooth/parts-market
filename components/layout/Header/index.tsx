@@ -4,11 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import {Logout} from "@mui/icons-material";
 
-import Logo from "public/logo.png"
-import {HOME_ROUTE} from "core/consts/routes";
-import {useSession} from "core/hooks/useSession";
+import {HomeRoute} from "@core/consts/routes";
+import {useSession} from "@core/hooks/useSession";
 
-import styles from 'components/layout/Header/Header.module.scss';
+import styles from '@components/layout/Header/Header.module.scss';
+
+import Logo from "public/logo.png"
 
 export const Header: React.FC = () => {
   const session = useSession();
@@ -25,7 +26,7 @@ export const Header: React.FC = () => {
         }}
       >
         <Toolbar>
-          <Link href={HOME_ROUTE}>
+          <Link href={HomeRoute}>
             <Image src={Logo} alt="AutoParts" height="32" className={styles.image}/>
           </Link>
 

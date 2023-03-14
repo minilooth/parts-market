@@ -1,11 +1,11 @@
 import {GetServerSidePropsContext, NextPageContext} from "next";
 import useSWR, {SWRConfiguration} from "swr";
 
-import {Page, Pageable} from "core/types/common";
-import {Api} from "core/api";
-import {Model} from "core/types";
-import {PageableUtils} from "core/utils/pageable";
-import {DefaultSWRConfiguration, ModelsSWRKey} from "core/consts/swr";
+import {Page, Pageable} from "@core/types/common";
+import {Api} from "@core/api";
+import {Model} from "@core/types";
+import {PageableUtils} from "@core/utils/pageable";
+import {DefaultSWRConfiguration, ModelsSWRKey} from "@core/consts/swr";
 
 const fetcher = (makeId?: number, pageable?: Pageable, ctx?: NextPageContext | GetServerSidePropsContext) => {
   if (makeId) {

@@ -3,7 +3,7 @@ import Link from "next/link";
 import {Box, Divider, Typography} from "@mui/material";
 
 import {CommonLayout} from "components/layout/CommonLayout";
-import {HOME_ROUTE} from "core/consts/routes";
+import {HomeRoute} from "core/consts/routes";
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -51,7 +51,7 @@ const NotFoundPage: React.FC = () => {
             }
           }}
         >
-          <Link href={HOME_ROUTE}>
+          <Link href={HomeRoute}>
             Click here to return to Home page.
           </Link>
         </Typography>

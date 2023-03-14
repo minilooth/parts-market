@@ -6,19 +6,13 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {useForm, FormProvider, FieldValues} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 
-import {Make} from "core/types";
-import {FormInputText} from "components/common/form/FormInputText";
-import {FormUtils} from "core/utils/form";
-import {MakeSchema} from "core/schemas/make";
-import {Optional} from "core/types/common";
+import {FormInputText} from "@components/common/form/FormInputText";
+import {FormUtils} from "@core/utils/form";
+import {MakeSchema} from "@core/schemas/make";
+import {SettingsTabFormProps} from "@core/types/settings";
+import {Make} from "@core/types";
 
-interface MakesTabFormProps {
-  selection: Optional<Make>;
-  onSave: (make: Make, callback: () => void) => void | Promise<void>;
-  onDelete: (make: Make, callback: () => void) => void | Promise<void>;
-}
-
-export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection, onSave, onDelete}) => {
+export const MakesTabForm: React.FC<SettingsTabFormProps<Make>> = ({selection, onSave, onDelete}) => {
   const methods = useForm({mode: "onChange", resolver: yupResolver(MakeSchema)})
   const {handleSubmit, reset, formState: {errors, isValid}} = methods
 

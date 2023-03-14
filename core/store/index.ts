@@ -1,6 +1,6 @@
 import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit'
 
-import settingsSlice from 'core/store/features/settings';
+import settingsSlice from '@core/store/features/settings';
 
 const store = configureStore({
   reducer: {

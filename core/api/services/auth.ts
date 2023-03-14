@@ -1,7 +1,7 @@
 import {AxiosInstance} from "axios";
 
-import {User} from "core/types";
-import {ADMIN} from "core/consts/authorities";
+import {User} from "@core/types";
+import {Admin} from "@core/consts/authorities";
 
 export const AuthApi = (instance: AxiosInstance) => ({
 
@@ -21,7 +21,7 @@ export const AuthApi = (instance: AxiosInstance) => ({
       surname: 'Moroz',
       patronymic: 'Dmitrievich',
       authorities: [
-        {name: ADMIN}
+        {name: Admin}
       ],
       avatar: '1.jpg'
     }
