@@ -3,6 +3,8 @@ import {Divider, List, ListItem, ListItemText, Stack} from "@mui/material";
 
 import {CustomListItemButton} from "components/common/wrappers/CustomListItemButton";
 import {SettingsMenuItem, SettingsTab} from "core/types/settings";
+import {selectIsMenuExpanded} from "../../../../core/store/features/settings";
+import {useAppSelector} from "../../../../core/store/hooks";
 
 interface SettingsMenuProps {
   items: Array<Array<SettingsMenuItem>>;
@@ -12,8 +14,14 @@ interface SettingsMenuProps {
 }
 
 export const SettingsMenu: React.FC<SettingsMenuProps> = ({items, onTabChange, activeTab, width}) => {
+  const visible = useAppSelector(selectIsMenuExpanded);
+
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Stack flexBasis={width} bgcolor="background.paper" sx={{ overflowY: 'auto' }}>
+    <Stack flexBasis={width} bgcolor="background.paper" sx={{overflowY: 'auto'}}>
       {items.map((array, index) => (
         <React.Fragment key={index}>
           {!!index && <Divider/>}

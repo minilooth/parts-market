@@ -7,6 +7,7 @@ export const Page: React.FC<React.PropsWithChildren> = ({children}) => {
       direction="column"
       alignItems="stretch"
       flex={1}
+      paddingTop={1}
     >{children}</Stack>
   )
 }

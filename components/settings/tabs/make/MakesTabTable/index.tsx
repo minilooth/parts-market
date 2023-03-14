@@ -5,9 +5,11 @@ import ClearIcon from '@mui/icons-material/Clear';
 import {DataGridProps,} from "@mui/x-data-grid";
 
 import {DEFAULT_PAGE_SIZE_OPTIONS} from "core/consts/pagination";
-import {Make} from "core/types/types";
+import {Make} from "core/types";
 import {CustomDataGrid} from "components/common/wrappers/CustomDataGrid";
 import {Page} from "core/types/common";
+
+import NotFound from "public/web-page.png"
 
 interface MakesTabContentProps {
   selection?: Make | null;
@@ -57,6 +59,8 @@ export const MakesTabTable: React.FC<MakesTabContentProps> = ({
         rowSelectionModel={rowSelectionModel}
         paginationModel={paginationModel}
         pageSizeOptions={DEFAULT_PAGE_SIZE_OPTIONS}
+        noRowsOverlayText="No data found in database"
+        noRowsOverlayImage={NotFound}
       />
     </Stack>
   )

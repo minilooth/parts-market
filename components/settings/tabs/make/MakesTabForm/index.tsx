@@ -6,13 +6,14 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {useForm, FormProvider, FieldValues} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 
-import {Make} from "core/types/types";
+import {Make} from "core/types";
 import {FormInputText} from "components/common/form/FormInputText";
 import {FormUtils} from "core/utils/form";
 import {MakeSchema} from "core/schemas/make";
+import {Optional} from "core/types/common";
 
 interface MakesTabFormProps {
-  selection?: Make | null;
+  selection: Optional<Make>;
   onSave: (make: Make, callback: () => void) => void | Promise<void>;
   onDelete: (make: Make, callback: () => void) => void | Promise<void>;
 }
@@ -27,7 +28,7 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection, onSave, on
   }, [selection, reset])
 
   const handleSuccessSave = () => {
-    reset({}, { keepDefaultValues: true });
+    reset({}, {keepDefaultValues: true});
   }
 
   const handleSaveClick = async (values: FieldValues) => {
@@ -36,7 +37,7 @@ export const MakesTabForm: React.FC<MakesTabFormProps> = ({selection, onSave, on
   }
 
   const handleSuccessDeletion = () => {
-    reset({}, { keepDefaultValues: true })
+    reset({}, {keepDefaultValues: true})
   }
 
   const handleDeleteClick = async () => {

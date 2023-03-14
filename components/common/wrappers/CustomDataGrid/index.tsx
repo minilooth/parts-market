@@ -4,9 +4,11 @@ import {DataGrid, DataGridProps} from "@mui/x-data-grid";
 import {CustomNoRowsOverlay} from "components/common/wrappers/CustomNoRowsOverlay";
 import {Page} from "core/types/common";
 import {PageableUtils} from "core/utils/pageable";
+import {StaticImageData} from "next/image";
 
 interface CustomDataGridProps {
   noRowsOverlayText?: string;
+  noRowsOverlayImage?: StaticImageData;
   columns: DataGridProps['columns'];
   rows: Page<any>;
   rowSelectionModel?: DataGridProps['rowSelectionModel'];
@@ -20,7 +22,8 @@ interface CustomDataGridProps {
 }
 
 export const CustomDataGrid: React.FC<CustomDataGridProps> = ({
-                                                                noRowsOverlayText = 'No data found in database',
+                                                                noRowsOverlayText,
+                                                                noRowsOverlayImage,
                                                                 columns = [],
                                                                 rows = PageableUtils.getEmptyPage(),
                                                                 rowSelectionModel,
@@ -69,7 +72,7 @@ export const CustomDataGrid: React.FC<CustomDataGridProps> = ({
       paginationMode="server"
       rowCount={rows.totalElements}
       slots={{
-        noRowsOverlay: () => <CustomNoRowsOverlay text={noRowsOverlayText}/>,
+        noRowsOverlay: () => <CustomNoRowsOverlay text={noRowsOverlayText} image={noRowsOverlayImage}/>,
       }}
       {...otherProps}
     />

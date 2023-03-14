@@ -1,8 +1,8 @@
 import React from "react";
 import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from "@mui/x-data-grid";
 import {Stack} from "@mui/material";
-import {useRouter} from "next/router";
 import {toast} from "react-toastify";
+import {useRouter} from "next/router";
 
 import {MAKES_COLUMNS} from "core/consts/settings";
 import {INITIAL_PAGE, INITIAL_PAGE_SIZE} from "core/consts/pagination";
@@ -10,8 +10,11 @@ import {SettingsTab} from "components/settings/tabs/wrapper/SettingsTab";
 import {MakesTabForm} from "components/settings/tabs/make/MakesTabForm";
 import {MakesTabTable} from "components/settings/tabs/make/MakesTabTable";
 import {PageableUtils} from "core/utils/pageable";
-import {useMakes} from "core/hooks/useMakes";
-import {Make} from "core/types/types";
+import {useMakes} from "core/hooks/entities/useMakes";
+import {Make} from "core/types";
+import {Optional} from "core/types/common";
+import {DefaultMutateConfiguration, MakesSWRKey} from "core/consts/swr";
+import {useMutate} from "core/hooks/entities/useMutate";
 
 export const MakesTab: React.FC = () => {
   const router = useRouter();
@@ -19,18 +22,21 @@ export const MakesTab: React.FC = () => {
   const page = Number.parseInt(router.query.page as string) || INITIAL_PAGE;
   const size = Number.parseInt(router.query.size as string) || INITIAL_PAGE_SIZE;
 
-  const {data, mutate} = useMakes({page, size}, {revalidateOnMount: false, revalidateOnFocus: false});
-  const [selectedRows, setSelectedRows] = React.useState<Array<GridRowId>>([]);
+  const mutate = useMutate();
+  const makes = useMakes({page, size});
 
-  const selectedMake: Make | undefined = data.content.find((item) => item.id === selectedRows?.[0])
+  const [selectedIds, setSelectedIds] = React.useState<Array<GridRowId>>([]);
+  const selection: Optional<Make> = makes.content.find(({ id }) => id === selectedIds?.[0])
 
   React.useEffect(() => {
-    mutate()
+    mutate(MakesSWRKey)
+      .catch(console.error)
   }, [page, size, mutate])
 
   React.useEffect(() => {
     return () => {
-      mutate(PageableUtils.getEmptyPage())
+      mutate(MakesSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
+        .catch(console.error)
     }
   }, [mutate])
 
@@ -46,35 +52,34 @@ export const MakesTab: React.FC = () => {
   }
 
   const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) => {
-    setSelectedRows(selection)
+    setSelectedIds(selection)
   }
 
   const handleRefreshClick = async (_: React.MouseEvent) => {
-    await setSelectedRows([]);
-    await mutate();
+    await setSelectedIds([]);
+    await mutate(MakesSWRKey);
   }
 
   const handleUnselectClick = async (_: React.MouseEvent) => {
-    await setSelectedRows([]);
+    await setSelectedIds([]);
   }
 
   const handleSaveClick = async (make: Make, callback: () => void) => {
-    if (selectedMake) {
+    if (selection) {
       toast.success('Make successfully updated');
-    }
-    else {
+    } else {
       toast.success('Make successfully saved')
     }
-    await setSelectedRows([]);
-    await mutate();
+    await setSelectedIds([]);
+    await mutate(MakesSWRKey);
     await callback();
     console.log("SAVE", make);
   }
 
   const handleDeleteClick = async (make: Make, callback: () => void) => {
     toast.success('Make successfully deleted')
-    await setSelectedRows([]);
-    await mutate();
+    await setSelectedIds([]);
+    await mutate(MakesSWRKey);
     await callback();
     console.log("DELETE", make)
   }
@@ -83,18 +88,18 @@ export const MakesTab: React.FC = () => {
     <SettingsTab title="Makes">
       <Stack direction="row" flex={1} spacing={3}>
         <MakesTabTable
-          selection={selectedMake}
-          rows={data}
+          selection={selection}
+          rows={makes}
           columns={MAKES_COLUMNS}
           paginationModel={{page: page - 1, pageSize: size}}
-          rowSelectionModel={selectedRows}
+          rowSelectionModel={selectedIds}
           onRefreshClick={handleRefreshClick}
           onUnselectClick={handleUnselectClick}
           onPaginationChange={handlePaginationChange}
           onSelectionChange={handleRowSelectionChange}
         />
         <MakesTabForm
-          selection={selectedMake}
+          selection={selection}
           onSave={handleSaveClick}
           onDelete={handleDeleteClick}
         />

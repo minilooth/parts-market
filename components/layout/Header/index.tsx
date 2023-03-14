@@ -1,23 +1,25 @@
 import React from "react";
-import {AppBar, Box, Divider, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
+import {AppBar, Avatar, Box, Divider, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import {Logout} from "@mui/icons-material";
 
 import Logo from "public/logo.png"
 import {HOME_ROUTE} from "core/consts/routes";
+import {useSession} from "core/hooks/useSession";
 
 import styles from 'components/layout/Header/Header.module.scss';
 
 export const Header: React.FC = () => {
+  const session = useSession();
+
   return (
     <Box sx={{flexGrow: 1}}>
       <AppBar
-        position="static"
+        position="relative"
         color="transparent"
         sx={{
           backgroundColor: 'white',
-          position: 'relative',
           zIndex: 2000,
           boxShadow: 'none'
         }}
@@ -38,9 +40,14 @@ export const Header: React.FC = () => {
 
           {/*<Button color="inherit">Login</Button>*/}
           <Box display="flex" columnGap={1.5} justifyContent="center" alignItems="center">
+            <Tooltip title={`${session?.firstName} ${session?.surname} ${session?.patronymic}`}>
+              <Avatar alt={`${session?.firstName} ${session?.surname} ${session?.patronymic}`} src={session?.avatar}/>
+            </Tooltip>
             <Tooltip title="Profile" componentsProps={{popper: {sx: {zIndex: 2001}}}}>
               <Typography variant="subtitle1" component="span" fontWeight={400} className={styles.fullName}>
-                Moroz Matvei Dmitrievich
+                {session?.firstName}&nbsp;
+                {session?.surname}&nbsp;
+                {session?.patronymic}
               </Typography>
             </Tooltip>
             <Tooltip title="Logout">

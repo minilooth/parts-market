@@ -21,19 +21,29 @@ export class PageableUtils {
     }
   }
 
-  static mockPages<T>(content: Array<T>, pageable: Pageable): Page<T> {
-    const totalElements = content.length;
-    const totalPages = content.length / pageable.size;
+  static mockPages<T>(content: Array<T>, pageable?: Pageable): Page<T> {
+    let slice;
+    let totalElements;
+    let totalPages;
 
-    const slice = content.slice(pageable.size * (pageable.page - 1), pageable.size * pageable.page);
+    if (!pageable) {
+      totalElements = content.length;
+      totalPages = 1;
+      slice = content;
+    }
+    else {
+      totalElements = content.length;
+      totalPages = content.length / pageable.size;
+      slice = content.slice(pageable.size * (pageable.page - 1), pageable.size * pageable.page);
+    }
 
     return {
       content: slice,
       totalElements: totalElements,
       totalPages: totalPages,
       pageable: {
-        page: pageable.page,
-        size: pageable.size
+        page: pageable?.page || 1,
+        size: pageable?.size || -1
       },
       first: true,
       last: true,

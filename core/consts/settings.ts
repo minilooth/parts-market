@@ -89,3 +89,30 @@ export const MAKES_COLUMNS: GridColDef[] = [
     valueFormatter: ({value}) => value && moment(value).fromNow()
   },
 ]
+
+export const MODELS_COLUMNS: GridColDef[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    flex: 0.1,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: 'name',
+    headerName: 'Name',
+    flex: 0.3
+  },
+  {
+    field: 'createdAt',
+    headerName: 'Created',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Updated',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+]

@@ -1,3 +1,12 @@
+import {TypeOptions} from "react-toastify";
+
+export type Optional<T> = T | undefined;
+
+export interface Toast {
+  message: string,
+  type: TypeOptions
+}
+
 export interface Entity {
   id: number;
   createdAt: Date;

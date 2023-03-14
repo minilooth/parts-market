@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import {PageableUtils} from "../../core/utils/pageable";
-import {Make} from "../../core/types/types";
+import {Make} from "../../core/types";
 
 const mocks: Array<Make> = [
   {
@@ -41,8 +41,13 @@ const mocks: Array<Make> = [
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
 
-  const page = Number.parseInt(query.page as string);
-  const size = Number.parseInt(query.size as string);
+  if (query.page && query.size) {
+    const page = Number.parseInt(query.page as string);
+    const size = Number.parseInt(query.size as string);
 
-  res.status(200).json(PageableUtils.mockPages(mocks, {page, size}))
+    res.status(200).json(PageableUtils.mockPages(mocks, {page, size}))
+  }
+  else {
+    res.status(200).json(PageableUtils.mockPages(mocks))
+  }
 }

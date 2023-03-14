@@ -1,8 +1,17 @@
 import React from "react";
-import {FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps} from "@mui/material";
+import {
+  FormControl,
+  FormControlProps,
+  FormHelperText, IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectProps
+} from "@mui/material";
 import {Controller, useFormContext} from "react-hook-form";
+import ClearIcon from "@mui/icons-material/Clear";
 
-interface FormInputDropdownProps extends SelectProps {
+interface FormInputDropdownProps extends Omit<SelectProps, 'margin' | 'notched'> {
   name: string;
   label?: string;
   options: Array<any>;
@@ -10,6 +19,8 @@ interface FormInputDropdownProps extends SelectProps {
   labelKey?: string;
   labelGetter?: (object: any) => void;
   helperText?: string;
+  margin: FormControlProps['margin']
+  onResetClick?: () => void;
 }
 
 export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
@@ -23,6 +34,11 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
                                                                       defaultValue,
                                                                       error,
                                                                       helperText,
+                                                                      margin,
+                                                                      sx,
+                                                                      onResetClick,
+                                                                      placeholder,
+                                                                      onChange: componentOnChange,
                                                                       ...other
                                                                     }) => {
   const {control} = useFormContext()
@@ -35,17 +51,57 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
     ))
   }
 
+  const generatePlaceholderOption = () => {
+    if (placeholder) {
+      return (
+        <MenuItem value="" selected>
+          <em>{placeholder}</em>
+        </MenuItem>
+      )
+    }
+  }
+
   return (
-    <FormControl size={size}>
-      <InputLabel>{label}</InputLabel>
+    <FormControl size={size} margin={margin}>
+      <InputLabel shrink={!!placeholder || undefined} error={error}>{label}</InputLabel>
       <Controller
         defaultValue={defaultValue}
-        render={({field}) => (
+        render={({field: {value, onChange: controllerOnChange, ...field}}) => (
           <Select
+            value={value}
             {...field}
             {...other}
+            size={size}
             error={error}
+            label={label}
+            notched={!!placeholder || undefined}
+            displayEmpty={!!placeholder}
+            onChange={(event, child) => {
+              if (componentOnChange) {
+                componentOnChange(event, child);
+              }
+              controllerOnChange(event, child)
+            }}
+            endAdornment={
+              <IconButton
+                onClick={onResetClick}
+                size="small"
+                sx={{marginRight: -1, display: !value ? 'none' : ''}}
+              >
+                <ClearIcon fontSize="small"/>
+              </IconButton>
+            }
+            sx={{
+              ...sx,
+              "& .MuiSelect-iconOutlined": {
+                display: value ? "none" : ''
+              },
+              '& .MuiSelect-select': {
+                opacity: value ? 1 : 0.42
+              }
+            }}
           >
+            {generatePlaceholderOption()}
             {generateSingleOptions()}
           </Select>
         )}
