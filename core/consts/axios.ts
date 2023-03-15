@@ -1,2 +1,2 @@
-export const AxiosLoadingEventName = "onaxiosloading";
-export const AxiosCompleteEventName = "onaxioscomplete";
+export const AxiosLoadingEventName = 'onaxiosloading';
+export const AxiosCompleteEventName = 'onaxioscomplete';

@@ -1,10 +1,10 @@
-import {GetServerSidePropsContext, NextPageContext} from "next";
+import {GetServerSidePropsContext, NextPageContext} from 'next';
 
-import {MakeApi} from "@core/api/services/make";
-import {Axios} from "@core/axios";
-import {AuthApi} from "@core/api/services/auth";
-import {ModelApi} from "@core/api/services/models";
-import {GenerationApi} from "@core/api/services/generation";
+import {MakeApi} from '@core/api/services/make';
+import {Axios} from '@core/axios';
+import {AuthApi} from '@core/api/services/auth';
+import {ModelApi} from '@core/api/services/models';
+import {GenerationApi} from '@core/api/services/generation';
 
 interface ApiReturnType {
   make: ReturnType<typeof MakeApi>;

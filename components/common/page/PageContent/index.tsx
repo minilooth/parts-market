@@ -1,5 +1,5 @@
-import React from "react";
-import {Paper, Stack} from "@mui/material";
+import React from 'react';
+import {Paper, Stack} from '@mui/material';
 
 import styles from '@components/common/page/PageContent/PageContent.module.scss';
 

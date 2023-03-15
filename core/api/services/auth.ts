@@ -1,7 +1,7 @@
-import {AxiosInstance} from "axios";
+import {AxiosInstance} from 'axios';
 
-import {User} from "@core/types";
-import {Admin} from "@core/consts/authorities";
+import {User} from '@core/types';
+import {Admin} from '@core/consts/authorities';
 
 export const AuthApi = (instance: AxiosInstance) => ({
 

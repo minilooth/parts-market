@@ -1,9 +1,9 @@
-import {MutatorOptions, SWRConfiguration} from "swr";
+import {MutatorOptions, SWRConfiguration} from 'swr';
 
-export const MakesSWRKey = "MAKES";
-export const ModelsSWRKey = "MODELS";
-export const GenerationsSWRKey = "GENERATIONS";
-export const SessionSWRKey = "SESSION";
+export const MakesSWRKey = 'MAKES';
+export const ModelsSWRKey = 'MODELS';
+export const GenerationsSWRKey = 'GENERATIONS';
+export const SessionSWRKey = 'SESSION';
 
 export const DefaultSWRConfiguration: SWRConfiguration = {
   revalidateOnMount: false,

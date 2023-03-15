@@ -1,6 +1,7 @@
 {
   "rules": {
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "quotes": [2, "single", { "avoidEscape": true }]
   },
   "parser": "@typescript-eslint/parser",
   "extends": ["next/core-web-vitals"]

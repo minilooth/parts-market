@@ -1,9 +1,9 @@
-import {NextPage} from "next";
+import {NextPage} from 'next';
 
-import {CommonLayout} from "components/layout/CommonLayout";
-import {MainContainer} from "components/layout/MainContainer";
-import {withAuthSSP} from "core/withAuthSSP";
-import {Admin, User} from "core/consts/authorities";
+import {CommonLayout} from '@components/layout/CommonLayout';
+import {MainContainer} from '@components/layout/MainContainer';
+import {withAuthSSP} from '@core/withAuthSSP';
+import {Admin, User} from '@core/consts/authorities';
 
 const HomePage: NextPage = () => {
   return (

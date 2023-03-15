@@ -1,8 +1,8 @@
-import React from "react"
-import {Stack} from "@mui/material";
-import Image, {StaticImageData} from "next/image";
+import React from 'react'
+import {Stack} from '@mui/material';
+import Image, {StaticImageData} from 'next/image';
 
-import NotFound from "@public/web-page.png"
+import NotFound from '@public/web-page.png'
 
 interface CustomNoRowsOverlayProps {
   text?: string;

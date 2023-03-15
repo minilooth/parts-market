@@ -1,43 +1,45 @@
-import React from "react"
-import {Stack} from "@mui/material";
-import {useRouter} from "next/router";
-import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from "@mui/x-data-grid";
-import {toast} from "react-toastify";
+import React from 'react'
+import {Stack} from '@mui/material';
+import {useRouter} from 'next/router';
+import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from '@mui/x-data-grid';
+import {toast} from 'react-toastify';
 
-import {SettingsTab} from "@components/settings/tabs/wrapper/SettingsTab";
-import {ModelsColumns} from "@core/consts/settings";
-import {ModelsTabTable} from "@components/settings/tabs/model/ModelsTabTable";
-import {ModelsTabForm} from "@components/settings/tabs/model/ModelsTabForm";
-import {PageableUtils} from "@core/utils/pageable";
-import {InitialPage, InitialPageSize} from "@core/consts/pagination";
-import {useModels} from "@core/hooks/entities/useModels";
-import {Model} from "@core/types";
-import {Optional} from "@core/types/common";
-import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from "@core/consts/swr";
-import {useMutate} from "@core/hooks/useMutate";
+import {SettingsTab} from '@components/settings/tabs/wrapper/SettingsTab';
+import {ModelsColumns} from '@core/consts/settings';
+import {ModelsTabTable} from '@components/settings/tabs/model/ModelsTabTable';
+import {ModelsTabForm} from '@components/settings/tabs/model/ModelsTabForm';
+import {PageableUtils} from '@core/utils/pageable';
+import {InitialPage, InitialPageSize} from '@core/consts/pagination';
+import {useModels} from '@core/hooks/entities/useModels';
+import {Model} from '@core/types';
+import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from '@core/consts/swr';
+import {useMutate} from '@core/hooks/useMutate';
+import {useDialogDisappearDuration} from '@core/hooks/useDialogDisappearDuration';
+import {Api} from '@core/api';
 
 export const ModelsTab: React.FC = () => {
   const router = useRouter();
+  const mutate = useMutate();
+  const dialogDisappearDuration = useDialogDisappearDuration();
 
   const page = Number.parseInt(router.query.page as string) || InitialPage;
   const size = Number.parseInt(router.query.size as string) || InitialPageSize;
   const makeId = Number.parseInt(router.query.makeId as string);
 
-  const mutate = useMutate()
   const models = useModels(makeId, {page, size});
 
   const [selectedIds, setSelectedIds] = React.useState<Array<GridRowId>>([]);
-  const selection: Optional<Model> = models.content.find(({ id }) => id === selectedIds?.[0])
+  const selection = models.content.find(({id}) => id === selectedIds?.[0])
 
   React.useEffect(() => {
     mutate(ModelsSWRKey)
-      .catch(console.error);
+      .catch(toast.error);
   }, [page, size, makeId, mutate])
 
   React.useEffect(() => {
     return () => {
       mutate(ModelsSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(console.error)
+        .catch(toast.error)
     }
   }, [mutate])
 
@@ -53,37 +55,51 @@ export const ModelsTab: React.FC = () => {
   }
 
   const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) => {
-    setSelectedIds(selection)
+    resetSelection(selection)
   }
 
   const handleRefreshClick = async (_: React.MouseEvent) => {
-    await setSelectedIds([]);
+    resetSelection();
     await mutate(MakesSWRKey)
     await mutate(ModelsSWRKey)
   }
 
-  const handleUnselectClick = async (_: React.MouseEvent) => {
-    await setSelectedIds([]);
+  const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
+  const resetSelection = (value: Array<GridRowId> = []) => setSelectedIds(value);
+
+  const postRequestAction = async () => {
+    resetSelection();
+    await mutate(ModelsSWRKey);
   }
 
-  const handleSaveClick = async (make: Model, callback: () => void) => {
-    if (selection) {
-      toast.success('Model successfully updated');
-    } else {
-      toast.success('Model successfully saved')
+  const handleSaveClick = async (make: Model, callback: VoidFunction) => {
+    try {
+      if (selection) {
+        await Api().model.updateById(selection.id, make);
+        await callback();
+        await postRequestAction();
+        toast.success('Model successfully updated');
+      } else {
+        await Api().model.create(make);
+        await callback();
+        await postRequestAction();
+        toast.success('Model successfully saved')
+      }
+    } catch (err) {
+      toast.error((err as Error).message)
     }
-    await setSelectedIds([]);
-    await mutate(ModelsSWRKey);
-    await callback();
-    console.log("SAVE", make);
   }
 
-  const handleDeleteClick = async (make: Model, callback: () => void) => {
-    toast.success('Model successfully deleted')
-    await setSelectedIds([]);
-    await mutate(ModelsSWRKey);
-    await callback();
-    console.log("DELETE", make)
+  const handleDeleteClick = async (make: Model, callback: VoidFunction) => {
+    try {
+      await Api().model.deleteById(make.id);
+      await callback();
+      setTimeout(async () => await postRequestAction(), dialogDisappearDuration)
+      toast.success('Model successfully deleted')
+    }
+    catch (err) {
+      toast.error((err as Error).message)
+    }
   }
 
   return (

@@ -1,6 +1,7 @@
-import {Model} from "../../core/types";
-import {NextApiRequest, NextApiResponse} from "next";
-import {PageableUtils} from "../../core/utils/pageable";
+import {NextApiRequest, NextApiResponse} from 'next';
+
+import {PageableUtils} from '@core/utils/pageable';
+import {Model} from '@core/types';
 
 const array: Array<Model> = [
   {
@@ -95,17 +96,21 @@ const array: Array<Model> = [
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
-  const makeId = Number.parseInt(query.makeId as string);
 
-  const models = array.filter((model) => model.makeId === makeId);
+  if (req.method === 'GET') {
+    const makeId = Number.parseInt(query.makeId as string);
+    const models = array.filter((model) => model.makeId === makeId);
 
-  if (query.page && query.size) {
-    const page = Number.parseInt(query.page as string);
-    const size = Number.parseInt(query.size as string);
+    if (query.page && query.size) {
+      const page = Number.parseInt(query.page as string);
+      const size = Number.parseInt(query.size as string);
 
-    res.status(200).json(PageableUtils.mockPages(models, {page, size}))
+      res.status(200).json(PageableUtils.mockPages(models, {page, size}))
+    } else {
+      res.status(200).json(PageableUtils.mockPages(models))
+    }
   }
-  else {
-    res.status(200).json(PageableUtils.mockPages(models))
+  if (req.method === 'POST') {
+    res.status(201).json(req.body);
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import {Controller, useFormContext} from 'react-hook-form'
-import {DatePicker, DatePickerProps, LocalizationProvider} from "@mui/x-date-pickers";
+import {DatePicker, DatePickerProps, LocalizationProvider} from '@mui/x-date-pickers';
 import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment'
 
 interface FormInputDateProps extends DatePickerProps<unknown> {

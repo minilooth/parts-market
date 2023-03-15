@@ -1,23 +1,23 @@
 import React from 'react';
-import {useRouter} from "next/router";
-import {Button, Fade, SelectChangeEvent, Stack, Typography} from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import {FormProvider, useForm} from "react-hook-form";
+import {useRouter} from 'next/router';
+import {Button, Fade, SelectChangeEvent, Stack, Typography} from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import {FormProvider, useForm} from 'react-hook-form';
 
-import {Generation} from "@core/types";
-import {useMutate} from "@core/hooks/useMutate";
-import {useMakes} from "@core/hooks/entities/useMakes";
-import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from "@core/consts/swr";
-import {PageableUtils} from "@core/utils/pageable";
-import {useModels} from "@core/hooks/entities/useModels";
-import {FormInputDropdown} from "@components/common/form/FormInputDropdown";
-import {CustomDataGrid} from "@components/common/wrappers/CustomDataGrid";
-import {DefaultPageSizeOptions} from "@core/consts/pagination";
-import {SettingsTabTableProps} from "@core/types/settings";
+import {Generation} from '@core/types';
+import {useMutate} from '@core/hooks/useMutate';
+import {useMakes} from '@core/hooks/entities/useMakes';
+import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from '@core/consts/swr';
+import {PageableUtils} from '@core/utils/pageable';
+import {useModels} from '@core/hooks/entities/useModels';
+import {FormInputDropdown} from '@components/common/form/FormInputDropdown';
+import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
+import {DefaultPageSizeOptions} from '@core/consts/pagination';
+import {SettingsTabTableProps} from '@core/types/settings';
 
-import NotFound from "@public/web-page.png";
-import PleaseSelect from "@public/cinema-seat.png";
+import NotFound from '@public/web-page.png';
+import PleaseSelect from '@public/cinema-seat.png';
 
 export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = ({
                                                                                    selection,
@@ -35,22 +35,22 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
   const makeId = Number.parseInt(router.query.makeId as string) || undefined;
   const modelId = Number.parseInt(router.query.modelId as string) || undefined;
 
-  const methods = useForm({mode: "onChange"})
+  const methods = useForm({mode: 'onChange'})
   const {reset, watch, setValue} = methods
 
   const mutate = useMutate();
   const makes = useMakes();
   const models = useModels(makeId);
 
-  const selectedMakeId = watch("makeId");
-  const selectedModelId = watch("modelId");
+  const selectedMakeId = watch('makeId');
+  const selectedModelId = watch('modelId');
 
   React.useEffect(() => {
     if (makes && makes.content.length > 0) {
-      setValue("makeId", makeId)
+      setValue('makeId', makeId)
     }
     if (models && models.content.length > 0) {
-      setValue("modelId", modelId)
+      setValue('modelId', modelId)
     }
   }, [makeId, modelId, reset, setValue, makes, models])
 
@@ -89,14 +89,16 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
   }
 
   const handleSelectionChange = async (makeId?: number, modelId?: number) => {
-    setValue("makeId", makeId)
-    setValue("modelId", modelId)
+    setValue('makeId', makeId)
+    setValue('modelId', modelId)
     await router.push({
       pathname: router.pathname,
       query: {
         ...router.query,
         makeId: makeId,
-        modelId: modelId
+        modelId: modelId,
+        page: undefined,
+        size: undefined
       }
     })
   }

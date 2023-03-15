@@ -1,4 +1,4 @@
-import {Entity} from "@core/types/common";
+import {Entity} from '@core/types/common';
 
 export interface Authority {
   name: string;

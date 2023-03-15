@@ -7,9 +7,9 @@ import {
   PrecisionManufacturing,
   Settings,
   Work
-} from "@mui/icons-material";
+} from '@mui/icons-material';
 
-import {SideBarItem} from "@core/types/side-bar";
+import {SideBarItem} from '@core/types/side-bar';
 import {
   ChartsRoute,
   CompanyRoute,
@@ -18,7 +18,7 @@ import {
   ProvidersRoute,
   SettingsRoute,
   UsersRoute, VehiclesRoute
-} from "@core/consts/routes";
+} from '@core/consts/routes';
 
 export const SideBarWidth = 225;
 

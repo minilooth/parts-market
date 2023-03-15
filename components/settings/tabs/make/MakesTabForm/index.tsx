@@ -1,43 +1,45 @@
-import React from "react";
-import {Button, Fade, Stack, Typography} from "@mui/material";
+import React from 'react';
+import {Button, Fade, Stack, Typography} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteIcon from '@mui/icons-material/Delete';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import {useForm, FormProvider, FieldValues} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+import {useForm, FormProvider, FieldValues} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
 
-import {FormInputText} from "@components/common/form/FormInputText";
-import {FormUtils} from "@core/utils/form";
-import {MakeSchema} from "@core/schemas/make";
-import {SettingsTabFormProps} from "@core/types/settings";
-import {Make} from "@core/types";
+import {FormInputText} from '@components/common/form/FormInputText';
+import {FormUtils} from '@core/utils/form';
+import {MakeSchema} from '@core/schemas/make';
+import {SettingsTabFormProps} from '@core/types/settings';
+import {Make} from '@core/types';
+import {DeleteConfirmationDialog} from '@components/dialog/DeleteConfirmationDialog';
+import {useDialogState} from '@core/hooks/useDialogState';
 
 export const MakesTabForm: React.FC<SettingsTabFormProps<Make>> = ({selection, onSave, onDelete}) => {
-  const methods = useForm({mode: "onChange", resolver: yupResolver(MakeSchema)})
+  const methods = useForm({mode: 'onChange', resolver: yupResolver(MakeSchema)})
   const {handleSubmit, reset, formState: {errors, isValid}} = methods
+
+  const [dialogOpened, openDialog, closeDialog] = useDialogState(false);
 
   React.useEffect(() => {
     const transformed = FormUtils.transformDatesToMoments(selection || {});
     reset(transformed, {keepDefaultValues: true})
   }, [selection, reset])
 
-  const handleSuccessSave = () => {
-    reset({}, {keepDefaultValues: true});
-  }
-
-  const handleSaveClick = async (values: FieldValues) => {
+  const handleSaveClick = (values: FieldValues) => {
     const transformed = FormUtils.transformMomentsToDates(values);
-    await onSave(transformed, handleSuccessSave);
+    onSave(transformed, () => {
+      reset({}, {keepDefaultValues: true});
+    });
   }
 
-  const handleSuccessDeletion = () => {
-    reset({}, {keepDefaultValues: true})
-  }
-
-  const handleDeleteClick = async () => {
-    if (selection) {
-      await onDelete(selection, handleSuccessDeletion);
+  const handleDeleteClick = () => {
+    if (!selection) {
+      return;
     }
+    onDelete(selection, () => {
+      closeDialog();
+      reset({}, {keepDefaultValues: true})
+    });
   }
 
   return (
@@ -46,7 +48,7 @@ export const MakesTabForm: React.FC<SettingsTabFormProps<Make>> = ({selection, o
 
         <Stack direction="row" alignItems="end" height={32}>
           <Typography variant="subtitle1" lineHeight={1} flexGrow={1}>
-            {selection ? 'Edit an existing make' : 'Create new make'}
+            {selection ? 'Edit an existing make:' : 'Create new make:'}
           </Typography>
         </Stack>
 
@@ -67,14 +69,16 @@ export const MakesTabForm: React.FC<SettingsTabFormProps<Make>> = ({selection, o
           <Fade in={!!selection} unmountOnExit>
             <Button
               variant="contained"
+              color="error"
               startIcon={<DeleteIcon/>}
               size="small"
-              onClick={() => handleDeleteClick()}
+              onClick={openDialog}
             >Delete</Button>
           </Fade>
           <Button
             onClick={handleSubmit(handleSaveClick)}
             variant="contained"
+            color="success"
             size="small"
             startIcon={<SaveIcon/>}
             disabled={!isValid}
@@ -89,6 +93,25 @@ export const MakesTabForm: React.FC<SettingsTabFormProps<Make>> = ({selection, o
             </Typography>
           </Stack>
         </Fade>
+
+        <DeleteConfirmationDialog
+          title="Are you absolutely sure?"
+          buttonText="I understand the consequences, delete this make"
+          open={dialogOpened}
+          matches={selection?.name}
+          onClose={closeDialog}
+          onConfirm={handleDeleteClick}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body2" textAlign="justify">
+              This action <b>cannot</b> be undone. This will permanently delete make and all other entities which linked
+              with them.
+            </Typography>
+            <Typography variant="body2">
+              Please type <b>{selection?.name}</b> to confirm.
+            </Typography>
+          </Stack>
+        </DeleteConfirmationDialog>
 
       </Stack>
     </Stack>

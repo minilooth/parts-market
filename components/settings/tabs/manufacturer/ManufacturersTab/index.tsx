@@ -1,6 +1,6 @@
-import React from "react"
+import React from 'react'
 
-import {SettingsTab} from "@components/settings/tabs/wrapper/SettingsTab";
+import {SettingsTab} from '@components/settings/tabs/wrapper/SettingsTab';
 
 export const ManufacturersTab: React.FC = () => {
   return (

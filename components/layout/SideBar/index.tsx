@@ -1,9 +1,9 @@
-import React from "react"
-import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar} from "@mui/material"
-import {useRouter} from "next/router";
+import React from 'react'
+import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar} from '@mui/material'
+import {useRouter} from 'next/router';
 
-import {SideBarItem} from "@core/types/side-bar";
-import {CustomListItemButton} from "@components/common/wrappers/CustomListItemButton";
+import {SideBarItem} from '@core/types/side-bar';
+import {CustomListItemButton} from '@components/common/wrappers/CustomListItemButton';
 
 interface SideBarProps {
   items: Array<Array<SideBarItem>>,
@@ -14,8 +14,10 @@ export const SideBar: React.FC<SideBarProps> = ({items, width}) => {
   const router = useRouter();
   const currentPage = router.pathname;
 
-  const handleButtonClick = (href: string) => {
-    router.push(href);
+  const handleButtonClick = async (href: string) => {
+    if (href !== currentPage) {
+      await router.push(href);
+    }
   }
 
   return (

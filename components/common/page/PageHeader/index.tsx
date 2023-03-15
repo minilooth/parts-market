@@ -1,5 +1,5 @@
-import React from "react";
-import {Stack} from "@mui/material";
+import React from 'react';
+import {Stack} from '@mui/material';
 
 export const PageHeader: React.FC<React.PropsWithChildren> = ({children}) => {
   return (

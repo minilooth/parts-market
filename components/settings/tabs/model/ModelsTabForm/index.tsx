@@ -1,23 +1,26 @@
-import React from "react"
-import {Button, Fade, Stack, Typography} from "@mui/material"
-import DeleteIcon from "@mui/icons-material/Delete";
-import SaveIcon from "@mui/icons-material/Save";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {yupResolver} from "@hookform/resolvers/yup";
-import {FieldValues, FormProvider, useForm} from "react-hook-form";
+import React from 'react'
+import {Button, Fade, Stack, Typography} from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {FieldValues, FormProvider, useForm} from 'react-hook-form';
 
-import {Model} from "@core/types";
-import {FormUtils} from "@core/utils/form";
-import {FormInputText} from "@components/common/form/FormInputText";
-import {ModelSchema} from "@core/schemas/model";
-import {FormInputDropdown} from "@components/common/form/FormInputDropdown";
-import {useMakes} from "@core/hooks/entities/useMakes";
-import {SettingsTabFormProps} from "@core/types/settings";
+import {Model} from '@core/types';
+import {FormUtils} from '@core/utils/form';
+import {FormInputText} from '@components/common/form/FormInputText';
+import {ModelSchema} from '@core/schemas/model';
+import {FormInputDropdown} from '@components/common/form/FormInputDropdown';
+import {useMakes} from '@core/hooks/entities/useMakes';
+import {SettingsTabFormProps} from '@core/types/settings';
+import {useDialogState} from '@core/hooks/useDialogState';
+import {DeleteConfirmationDialog} from '@components/dialog/DeleteConfirmationDialog';
 
 export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection, onSave, onDelete}) => {
   const makes = useMakes();
+  const [dialogOpened, openDialog, closeDialog] = useDialogState(false);
 
-  const methods = useForm({mode: "onChange", resolver: yupResolver(ModelSchema)})
+  const methods = useForm({mode: 'onChange', resolver: yupResolver(ModelSchema)})
   const {handleSubmit, reset, formState: {errors, isValid}, setValue} = methods
 
   React.useEffect(() => {
@@ -25,27 +28,25 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
     reset(transformed, {keepDefaultValues: true})
   }, [selection, reset])
 
-  const handleSuccessSave = () => {
-    reset({}, {keepDefaultValues: true});
-  }
-
-  const handleSaveClick = async (values: FieldValues) => {
+  const handleSaveClick = (values: FieldValues) => {
     const transformed = FormUtils.transformMomentsToDates(values);
-    await onSave(transformed, handleSuccessSave);
+    onSave(transformed, () => {
+      reset({}, {keepDefaultValues: true});
+    });
   }
 
-  const handleSuccessDeletion = () => {
-    reset({}, {keepDefaultValues: true})
-  }
-
-  const handleDeleteClick = async () => {
-    if (selection) {
-      await onDelete(selection, handleSuccessDeletion);
+  const handleDeleteClick = () => {
+    if (!selection) {
+      return;
     }
+    onDelete(selection, () => {
+      closeDialog();
+      reset({}, {keepDefaultValues: true})
+    });
   }
 
   const handleResetClick = () => {
-    setValue("makeId", undefined, {shouldValidate: true})
+    setValue('makeId', undefined, {shouldValidate: true})
   }
 
   return (
@@ -54,7 +55,7 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
 
         <Stack direction="row" alignItems="end" height={32}>
           <Typography variant="subtitle1" lineHeight={1} flexGrow={1}>
-            {selection ? 'Edit an existing model' : 'Create new model'}
+            {selection ? 'Edit an existing model:' : 'Create new model:'}
           </Typography>
         </Stack>
 
@@ -88,14 +89,16 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
           <Fade in={!!selection} unmountOnExit>
             <Button
               variant="contained"
+              color="error"
               startIcon={<DeleteIcon/>}
               size="small"
-              onClick={() => handleDeleteClick()}
+              onClick={openDialog}
             >Delete</Button>
           </Fade>
           <Button
             onClick={handleSubmit(handleSaveClick)}
             variant="contained"
+            color="success"
             size="small"
             startIcon={<SaveIcon/>}
             disabled={!isValid}
@@ -110,6 +113,25 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
             </Typography>
           </Stack>
         </Fade>
+
+        <DeleteConfirmationDialog
+          title="Are you absolutely sure?"
+          buttonText="I understand the consequences, delete this model"
+          open={dialogOpened}
+          matches={selection?.name}
+          onClose={closeDialog}
+          onConfirm={handleDeleteClick}
+        >
+          <Stack spacing={1}>
+            <Typography variant="body2" textAlign="justify">
+              This action <b>cannot</b> be undone. This will permanently delete model and all other entities which linked
+              with them.
+            </Typography>
+            <Typography variant="body2">
+              Please type <b>{selection?.name}</b> to confirm.
+            </Typography>
+          </Stack>
+        </DeleteConfirmationDialog>
 
       </Stack>
     </Stack>

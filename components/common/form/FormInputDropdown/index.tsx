@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   FormControl,
   FormControlProps,
@@ -7,20 +7,22 @@ import {
   MenuItem,
   Select,
   SelectProps
-} from "@mui/material";
-import {Controller, useFormContext} from "react-hook-form";
-import ClearIcon from "@mui/icons-material/Clear";
+} from '@mui/material';
+import {Controller, useFormContext} from 'react-hook-form';
+import ClearIcon from '@mui/icons-material/Clear';
+
+import {Optional} from '@core/types/common';
 
 interface FormInputDropdownProps extends Omit<SelectProps, 'margin' | 'notched'> {
   name: string;
-  label?: string;
+  label: Optional<string>;
   options: Array<any>;
-  valueKey?: string;
-  labelKey?: string;
-  labelGetter?: (object: any) => void;
-  helperText?: string;
+  valueKey: Optional<string>;
+  labelKey: Optional<string>;
+  labelGetter?: Optional<(object: any) => void>;
+  helperText?: Optional<string>;
   margin: FormControlProps['margin']
-  onResetClick?: () => void;
+  onResetClick: Optional<VoidFunction>;
 }
 
 export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
@@ -94,8 +96,8 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
             }
             sx={{
               ...sx,
-              "& .MuiSelect-iconOutlined": {
-                display: value ? "none" : ''
+              '& .MuiSelect-iconOutlined': {
+                display: value ? 'none' : ''
               },
               '& .MuiSelect-select': {
                 opacity: value ? 1 : 0.42

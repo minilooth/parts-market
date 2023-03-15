@@ -1,8 +1,8 @@
-import {GetServerSidePropsContext, GetServerSidePropsResult} from "next";
+import {GetServerSidePropsContext, GetServerSidePropsResult} from 'next';
 
-import {User} from "@core/types";
-import {Api} from "@core/api";
-import {SessionSWRKey} from "@core/consts/swr";
+import {User} from '@core/types';
+import {Api} from '@core/api';
+import {SessionSWRKey} from '@core/consts/swr';
 
 type IncomingGSSP<P> = (ctx: GetServerSidePropsContext, user?: User) => Promise<P>;
 
@@ -49,7 +49,7 @@ export const withAuthSSP = (
     if (!isLoggedIn && options.authorizationNeeded) {
       return {
         redirect: {
-          destination: "/not-found",
+          destination: '/not-found',
           permanent: true,
         }
       }
@@ -58,7 +58,7 @@ export const withAuthSSP = (
     if (isLoggedIn && !options.canAccessAuthorized) {
       return {
         redirect: {
-          destination: "/",
+          destination: '/',
           permanent: true
         }
       }
@@ -69,7 +69,7 @@ export const withAuthSSP = (
     if (options.authorizationNeeded && !options.authorities?.includes(user.authorities[0].name)) {
       return {
         redirect: {
-          destination: "/",
+          destination: '/',
           permanent: true
         }
       }

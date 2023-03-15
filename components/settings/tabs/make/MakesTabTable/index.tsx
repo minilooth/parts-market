@@ -1,14 +1,14 @@
-import React from "react"
-import {Button, Fade, Stack, Typography} from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
+import React from 'react'
+import {Button, Fade, Stack, Typography} from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import ClearIcon from '@mui/icons-material/Clear';
 
-import {DefaultPageSizeOptions} from "@core/consts/pagination";
-import {Make} from "@core/types";
-import {CustomDataGrid} from "@components/common/wrappers/CustomDataGrid";
-import {SettingsTabTableProps} from "@core/types/settings";
+import {DefaultPageSizeOptions} from '@core/consts/pagination';
+import {Make} from '@core/types';
+import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
+import {SettingsTabTableProps} from '@core/types/settings';
 
-import NotFound from "@public/web-page.png"
+import NotFound from '@public/web-page.png'
 
 export const MakesTabTable: React.FC<SettingsTabTableProps<Make>> = ({
                                                                 selection,

@@ -1,4 +1,4 @@
-import {useSWRConfig} from "swr";
+import {useSWRConfig} from 'swr';
 
 export const useMutate = () => {
   const { mutate } = useSWRConfig();

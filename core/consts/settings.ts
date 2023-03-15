@@ -1,7 +1,7 @@
-import {GridColDef} from "@mui/x-data-grid";
-import moment from "moment";
+import {GridColDef} from '@mui/x-data-grid';
+import moment from 'moment';
 
-import {SettingsMenuItem, SettingsTab} from "@core/types/settings";
+import {SettingsMenuItem, SettingsTab} from '@core/types/settings';
 
 export const SettingsMenuWidth = 225
 
@@ -69,8 +69,8 @@ export const MakesColumns: GridColDef[] = [
     field: 'id',
     headerName: 'ID',
     flex: 0.1,
-    align: "center",
-    headerAlign: "center",
+    align: 'center',
+    headerAlign: 'center',
   },
   {
     field: 'name',
@@ -96,8 +96,8 @@ export const ModelsColumns: GridColDef[] = [
     field: 'id',
     headerName: 'ID',
     flex: 0.1,
-    align: "center",
-    headerAlign: "center",
+    align: 'center',
+    headerAlign: 'center',
   },
   {
     field: 'name',
@@ -123,8 +123,8 @@ export const GenerationsColumns: GridColDef[] = [
     field: 'id',
     headerName: 'ID',
     flex: 0.1,
-    align: "center",
-    headerAlign: "center",
+    align: 'center',
+    headerAlign: 'center',
   },
   {
     field: 'name',
@@ -155,6 +155,7 @@ export const GenerationsColumns: GridColDef[] = [
   },
 ]
 
-export const YearsAscending = Array.from(Array(new Date().getFullYear() - 1960 + 1).keys())
-  .map(value => ({ value: value + 1960 }));
+export const StartYear = 1960;
+export const YearsAscending = Array.from(Array(new Date().getFullYear() - StartYear + 1).keys())
+  .map(value => ({ value: value + StartYear }));
 export const YearsDescending = [...YearsAscending].reverse();

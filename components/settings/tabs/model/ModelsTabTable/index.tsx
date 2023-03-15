@@ -1,22 +1,22 @@
-import React from "react"
-import {Button, Fade, SelectChangeEvent, Stack, Typography} from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import {FormProvider, useForm} from "react-hook-form";
+import React from 'react'
+import {Button, Fade, SelectChangeEvent, Stack, Typography} from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import {FormProvider, useForm} from 'react-hook-form';
 import {useRouter} from 'next/router';
 
-import {CustomDataGrid} from "@components/common/wrappers/CustomDataGrid";
-import {DefaultPageSizeOptions} from "@core/consts/pagination";
-import {Model} from "@core/types";
-import {FormInputDropdown} from "@components/common/form/FormInputDropdown";
-import {useMakes} from "@core/hooks/entities/useMakes";
-import {PageableUtils} from "@core/utils/pageable";
-import {DefaultMutateConfiguration, MakesSWRKey} from "@core/consts/swr";
-import {useMutate} from "@core/hooks/useMutate";
-import {SettingsTabTableProps} from "@core/types/settings";
+import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
+import {DefaultPageSizeOptions} from '@core/consts/pagination';
+import {Model} from '@core/types';
+import {FormInputDropdown} from '@components/common/form/FormInputDropdown';
+import {useMakes} from '@core/hooks/entities/useMakes';
+import {PageableUtils} from '@core/utils/pageable';
+import {DefaultMutateConfiguration, MakesSWRKey} from '@core/consts/swr';
+import {useMutate} from '@core/hooks/useMutate';
+import {SettingsTabTableProps} from '@core/types/settings';
 
-import NotFound from "@public/web-page.png"
-import PleaseSelect from "@public/cinema-seat.png";
+import NotFound from '@public/web-page.png'
+import PleaseSelect from '@public/cinema-seat.png';
 
 export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
                                                                   selection,
@@ -32,17 +32,17 @@ export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
   const router = useRouter();
   const {makeId} = router.query;
 
-  const methods = useForm({mode: "onChange"})
+  const methods = useForm({mode: 'onChange'})
   const {watch, setValue} = methods
 
   const mutate = useMutate();
   const makes = useMakes();
 
-  const selectedMakeId = watch("makeId");
+  const selectedMakeId = watch('makeId');
 
   React.useEffect(() => {
     if (makes && makes.content.length > 0) {
-      setValue("makeId", makeId);
+      setValue('makeId', makeId);
     }
   }, [makeId, makes, setValue])
 
@@ -64,12 +64,14 @@ export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
   }
 
   const handleMakeChange = async (makeId?: string) => {
-    setValue("makeId", makeId)
+    setValue('makeId', makeId)
     await router.push({
       pathname: router.pathname,
       query: {
         ...router.query,
-        makeId: makeId
+        makeId: makeId,
+        page: undefined,
+        size: undefined
       }
     })
   }

@@ -1,9 +1,9 @@
 import React from 'react';
-import Link from "next/link";
-import {Box, Divider, Typography} from "@mui/material";
+import Link from 'next/link';
+import {Box, Divider, Typography} from '@mui/material';
 
-import {CommonLayout} from "components/layout/CommonLayout";
-import {HomeRoute} from "core/consts/routes";
+import {CommonLayout} from '@components/layout/CommonLayout';
+import {HomeRoute} from '@core/consts/routes';
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -46,7 +46,7 @@ const NotFoundPage: React.FC = () => {
           fontWeight={400}
           sx={{
             cursor: 'pointer',
-            "&:hover": {
+            '&:hover': {
               textDecoration: 'underline'
             }
           }}

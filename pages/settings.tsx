@@ -1,11 +1,11 @@
-import {NextPage} from "next";
+import {NextPage} from 'next';
 
-import {MainContainer} from "components/layout/MainContainer";
-import {CommonLayout} from "components/layout/CommonLayout";
-import {Settings} from "components/settings/content/Settings";
-import {SettingsMenuItems, SettingsMenuWidth} from "../core/consts/settings";
-import {withAuthSSP} from "core/withAuthSSP";
-import {Admin} from "core/consts/authorities";
+import {MainContainer} from '@components/layout/MainContainer';
+import {CommonLayout} from '@components/layout/CommonLayout';
+import {Settings} from '@components/settings/content/Settings';
+import {SettingsMenuItems, SettingsMenuWidth} from '@core/consts/settings';
+import {withAuthSSP} from '@core/withAuthSSP';
+import {Admin} from '@core/consts/authorities';
 
 const SettingsPage: NextPage = () => {
   return (

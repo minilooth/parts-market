@@ -1,8 +1,8 @@
-import React from "react";
-import {ListItemButton} from "@mui/material";
+import React from 'react';
+import {ListItemButton} from '@mui/material';
 
 interface CustomListItemButtonProps {
-  onClick: (_: React.MouseEvent) => void
+  onClick: React.MouseEventHandler<HTMLDivElement>,
   selected: boolean;
 }
 

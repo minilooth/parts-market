@@ -1,21 +1,21 @@
-import React from "react";
-import {DataGridProps} from "@mui/x-data-grid";
+import React from 'react';
+import {DataGridProps} from '@mui/x-data-grid';
 
-import {Optional, Page} from "@core/types/common";
+import {Optional, Page} from '@core/types/common';
 
 export enum SettingsTab {
-  MAKES = "makes",
-  MODELS = "models",
-  GENERATIONS = "generations",
-  TRANSMISSIONS = "transmissions",
-  ENGINES = "engines",
-  BODY_TYPES = "body-types",
-  CATEGORIES = "categories",
-  SUBCATEGORIES = "subcategories",
-  GROUPS = "groups",
-  CITIES = "cities",
-  ADDRESSES = "addresses",
-  MANUFACTURERS = "manufacturers"
+  MAKES = 'makes',
+  MODELS = 'models',
+  GENERATIONS = 'generations',
+  TRANSMISSIONS = 'transmissions',
+  ENGINES = 'engines',
+  BODY_TYPES = 'body-types',
+  CATEGORIES = 'categories',
+  SUBCATEGORIES = 'subcategories',
+  GROUPS = 'groups',
+  CITIES = 'cities',
+  ADDRESSES = 'addresses',
+  MANUFACTURERS = 'manufacturers'
 }
 
 export interface SettingsMenuItem {
@@ -25,8 +25,8 @@ export interface SettingsMenuItem {
 
 export interface SettingsTabTableProps<T> {
   selection: Optional<T>;
-  onRefreshClick: (_: React.MouseEvent) => void;
-  onUnselectClick: (_: React.MouseEvent) => void;
+  onRefreshClick: React.MouseEventHandler<HTMLButtonElement>;
+  onUnselectClick: React.MouseEventHandler<HTMLButtonElement>;
   rows: Page<T>;
   columns: DataGridProps['columns'];
   onPaginationChange: DataGridProps['onPaginationModelChange'];
@@ -37,6 +37,6 @@ export interface SettingsTabTableProps<T> {
 
 export interface SettingsTabFormProps<T> {
   selection: Optional<T>;
-  onSave: (model: T, callback: () => void) => void | Promise<void>;
-  onDelete: (model: T, callback: () => void) => void | Promise<void>;
+  onSave: (model: T, callback: VoidFunction) => void | Promise<void>;
+  onDelete: (model: T, callback: VoidFunction) => void | Promise<void>;
 }

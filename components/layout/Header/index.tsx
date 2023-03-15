@@ -1,15 +1,15 @@
-import React from "react";
-import {AppBar, Avatar, Box, Divider, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
-import {Logout} from "@mui/icons-material";
+import React from 'react';
+import {AppBar, Avatar, Box, Divider, IconButton, Toolbar, Tooltip, Typography} from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
+import {Logout} from '@mui/icons-material';
 
-import {HomeRoute} from "@core/consts/routes";
-import {useSession} from "@core/hooks/useSession";
+import {HomeRoute} from '@core/consts/routes';
+import {useSession} from '@core/hooks/useSession';
 
 import styles from '@components/layout/Header/Header.module.scss';
 
-import Logo from "public/logo.png"
+import Logo from 'public/logo.png'
 
 export const Header: React.FC = () => {
   const session = useSession();

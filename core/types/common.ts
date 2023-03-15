@@ -1,4 +1,4 @@
-import {TypeOptions} from "react-toastify";
+import {TypeOptions} from 'react-toastify';
 
 export type Optional<T> = T | undefined;
 

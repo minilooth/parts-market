@@ -4,12 +4,12 @@ import axios, {
   AxiosRequestHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig
-} from "axios";
+} from 'axios';
 
-import {AxiosCompleteEventName, AxiosLoadingEventName} from "@core/consts/axios";
-import {ClientUtils} from "@core/utils/client";
+import {AxiosCompleteEventName, AxiosLoadingEventName} from '@core/consts/axios';
+import {ClientUtils} from '@core/utils/client';
 
-declare module "axios" {
+declare module 'axios' {
   interface InternalAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
     headers: AxiosRequestHeaders;
     metadata: {
@@ -19,7 +19,7 @@ declare module "axios" {
 }
 
 const DEFAULT_CONFIG = {
-  baseURL: `/api`,
+  baseURL: '/api',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'

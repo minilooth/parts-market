@@ -1,10 +1,10 @@
-import React from "react";
-import {Box} from "@mui/material";
+import React from 'react';
+import {Box} from '@mui/material';
 
-import {Header} from "@components/layout/Header";
-import {SideBar} from "@components/layout/SideBar";
-import {SideBarItems, SideBarWidth} from "@core/consts/side-bar";
-import {Footer} from "@components/layout/Footer";
+import {Header} from '@components/layout/Header';
+import {SideBar} from '@components/layout/SideBar';
+import {SideBarItems, SideBarWidth} from '@core/consts/side-bar';
+import {Footer} from '@components/layout/Footer';
 
 export const MainContainer: React.FC<React.PropsWithChildren> = ({children}) => {
   return (
