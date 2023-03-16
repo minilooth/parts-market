@@ -2,7 +2,7 @@ import axios, {
   AxiosError,
   AxiosRequestConfig,
   AxiosRequestHeaders,
-  AxiosResponse,
+  AxiosResponse, CreateAxiosDefaults,
   InternalAxiosRequestConfig
 } from 'axios';
 
@@ -18,7 +18,7 @@ declare module 'axios' {
   }
 }
 
-const DEFAULT_CONFIG = {
+const DefaultConfig: CreateAxiosDefaults = {
   baseURL: '/api',
   headers: {
     'Accept': 'application/json',
@@ -29,8 +29,8 @@ const DEFAULT_CONFIG = {
 
 export const BACKDROP_MIN_VISIBLE_DURATION_IN_MS = 300;
 
-export const Axios = (config?: any) => {
-  const instance = axios.create({...DEFAULT_CONFIG, ...config});
+export const Axios = (config?: CreateAxiosDefaults) => {
+  const instance = axios.create({...DefaultConfig, ...config});
   instance.interceptors.request.use(requestSuccessInterceptor, errorInterceptor)
   instance.interceptors.response.use(responseSuccessInterceptor, errorInterceptor)
   return instance;
@@ -47,13 +47,13 @@ const requestSuccessInterceptor = (config: InternalAxiosRequestConfig) => {
 }
 
 const responseSuccessInterceptor = (response: AxiosResponse) => {
-  const start = response.config.metadata.startTime;
-  const current = new Date();
-  const requestDuration = current.getTime() - start.getTime();
-
   if (!ClientUtils.isClient()) {
     return response;
   }
+
+  const start = response.config.metadata.startTime;
+  const current = new Date();
+  const requestDuration = current.getTime() - start.getTime();
 
   if (requestDuration <= BACKDROP_MIN_VISIBLE_DURATION_IN_MS) {
     setTimeout(() => window.dispatchEvent(new Event(AxiosCompleteEventName)),

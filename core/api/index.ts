@@ -3,7 +3,7 @@ import {GetServerSidePropsContext, NextPageContext} from 'next';
 import {MakeApi} from '@core/api/services/make';
 import {Axios} from '@core/axios';
 import {AuthApi} from '@core/api/services/auth';
-import {ModelApi} from '@core/api/services/models';
+import {ModelApi} from '@core/api/services/model';
 import {GenerationApi} from '@core/api/services/generation';
 import {BodyTypeApi} from '@core/api/services/body-type';
 import {EngineTypeApi} from '@core/api/services/engine-type';
@@ -33,7 +33,7 @@ export const Api = (ctx?: NextPageContext | GetServerSidePropsContext): ApiRetur
   return Object.entries(apis).reduce((prev, [key, f]) => {
     return {
       ...prev,
-      [key]: f(Axios())
+      [key]: f(Axios(ctx ? { baseURL: 'http://localhost:8080/api/v1' } : {}))
     };
   }, {} as ApiReturnType);
 }

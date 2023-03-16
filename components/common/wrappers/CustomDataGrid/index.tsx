@@ -3,14 +3,12 @@ import {DataGrid, DataGridProps} from '@mui/x-data-grid';
 import {StaticImageData} from 'next/image';
 
 import {CustomNoRowsOverlay} from '@components/common/wrappers/CustomNoRowsOverlay';
-import {Page} from '@core/types/common';
-import {PageableUtils} from '@core/utils/pageable';
 
 interface CustomDataGridProps {
   noRowsOverlayText: string;
   noRowsOverlayImage?: StaticImageData;
   columns: DataGridProps['columns'];
-  rows: Page<any>;
+  rows: Array<any>;
   rowSelectionModel?: DataGridProps['rowSelectionModel'];
   paginationModel?: DataGridProps['paginationModel'];
   onPaginationModelChange?: DataGridProps['onPaginationModelChange'];
@@ -19,13 +17,15 @@ interface CustomDataGridProps {
   props?: Omit<DataGridProps, 'columns' | 'rows'> & Omit<DataGridProps['sx'], 'width' | 'minWidth' | '& .MuiDataGrid-cell:focus' | '& .MuiDataGrid-columnHeader:focus' | '& .MuiDataGrid-cell:focus-within' | '& .MuiDataGrid-columnHeader:focus-within' | '& .MuiDataGrid-columnHeader:last-child' | '& .MuiDataGrid-columnHeader:last-child > .MuiDataGrid-columnSeparator'>
   width?: string;
   minWidth?: string;
+  paginationMode?: DataGridProps['paginationMode'];
+  rowCount?: DataGridProps['rowCount']
 }
 
 export const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                                                 noRowsOverlayText,
                                                                 noRowsOverlayImage,
                                                                 columns = [],
-                                                                rows = PageableUtils.getEmptyPage(),
+                                                                rows = [],
                                                                 rowSelectionModel,
                                                                 paginationModel,
                                                                 onPaginationModelChange,
@@ -33,7 +33,9 @@ export const CustomDataGrid: React.FC<CustomDataGridProps> = ({
                                                                 pageSizeOptions,
                                                                 props = {},
                                                                 width = '100%',
-                                                                minWidth
+                                                                minWidth,
+                                                                paginationMode = 'client',
+                                                                rowCount
                                                               }) => {
   const {sx, ...otherProps} = props;
 
@@ -63,14 +65,15 @@ export const CustomDataGrid: React.FC<CustomDataGridProps> = ({
         ...sx
       }}
       columns={columns}
-      rows={rows.content}
+      rows={rows}
       rowSelectionModel={rowSelectionModel}
       paginationModel={paginationModel}
       onPaginationModelChange={onPaginationModelChange}
       onRowSelectionModelChange={onRowSelectionModelChange}
       pageSizeOptions={pageSizeOptions}
-      paginationMode="server"
-      rowCount={rows.totalElements}
+      pagination
+      paginationMode={paginationMode}
+      rowCount={rowCount}
       slots={{
         noRowsOverlay: () => <CustomNoRowsOverlay text={noRowsOverlayText} image={noRowsOverlayImage}/>,
       }}

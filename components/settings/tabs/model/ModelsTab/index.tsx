@@ -1,71 +1,58 @@
 import React from 'react'
 import {Stack} from '@mui/material';
-import {useRouter} from 'next/router';
-import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from '@mui/x-data-grid';
+import {GridCallbackDetails, GridRowId, GridRowSelectionModel, GridPaginationModel} from '@mui/x-data-grid';
 import {toast} from 'react-toastify';
 
 import {SettingsTab} from '@components/settings/tabs/wrapper/SettingsTab';
 import {ModelsColumns} from '@core/consts/settings';
 import {ModelsTabTable} from '@components/settings/tabs/model/ModelsTabTable';
 import {ModelsTabForm} from '@components/settings/tabs/model/ModelsTabForm';
-import {PageableUtils} from '@core/utils/pageable';
-import {InitialPage, InitialPageSize} from '@core/consts/pagination';
 import {useModels} from '@core/hooks/entities/useModels';
 import {Model} from '@core/types';
-import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from '@core/consts/swr';
+import {DefaultMutateConfiguration, ModelsSWRKey} from '@core/consts/swr';
 import {useMutate} from '@core/hooks/useMutate';
-import {useDialogDisappearDuration} from '@core/hooks/useDialogDisappearDuration';
+import {useDialogDelay} from '@core/hooks/useDialogDelay';
 import {Api} from '@core/api';
+import {usePagination} from '@core/hooks/usePagination';
+import {useNumberedQueryParam} from '@core/hooks/useNumberedQueryParam';
 
 export const ModelsTab: React.FC = () => {
-  const router = useRouter();
-
-  const page = Number.parseInt(router.query.page as string) || InitialPage;
-  const size = Number.parseInt(router.query.size as string) || InitialPageSize;
-  const make = Number.parseInt(router.query.make as string);
-
   const mutate = useMutate();
-  const dialogDisappearDuration = useDialogDisappearDuration();
-  const models = useModels(make, {page, size});
+  const dialogDelay = useDialogDelay();
+  const make = useNumberedQueryParam('make');
+  const [page, size, paginationHandler] = usePagination();
+  const models = useModels(make);
   const [selection, setSelection] = React.useState<Array<GridRowId>>([]);
 
-  const row = models.content.find(({id}) => id === selection[0])
+  const row = models.find(({id}) => id === selection[0])
 
   React.useEffect(() => {
-    mutate(ModelsSWRKey)
-      .catch(toast.error);
-  }, [page, size, make, mutate])
+    if (make) {
+      mutate(ModelsSWRKey).catch(toast.error);
+    }
+    else {
+      mutate(ModelsSWRKey, [], DefaultMutateConfiguration).catch(toast.error)
+    }
+  }, [make, mutate])
 
   React.useEffect(() => {
     return () => {
-      mutate(ModelsSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(toast.error)
+      mutate(ModelsSWRKey, [], DefaultMutateConfiguration).catch(toast.error)
     }
   }, [mutate])
 
-  const handlePaginationChange = async (pagination: GridPaginationModel, _: GridCallbackDetails) => {
-    await router.push({
-      pathname: router.pathname,
-      query: {
-        ...router.query,
-        page: pagination.page + 1,
-        size: pagination.pageSize
-      }
-    })
-  }
-
-  const handleRefreshClick = async (_: React.MouseEvent) => {
+  const handlePaginationChange = async (pagination: GridPaginationModel, callback: GridCallbackDetails) => {
     resetSelection();
-    await mutate(MakesSWRKey)
-    await mutate(ModelsSWRKey)
+    await paginationHandler(pagination, callback);
   }
 
+  const handleRefreshClick = async (_: React.MouseEvent) => await refresh();
   const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) =>
     resetSelection(selection)
   const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
   const resetSelection = (value: Array<GridRowId> = []) => setSelection(value);
 
-  const afterActionSucceeded = async () => {
+  const refresh = async () => {
     resetSelection();
     await mutate(ModelsSWRKey);
   }
@@ -75,12 +62,12 @@ export const ModelsTab: React.FC = () => {
       if (row) {
         await Api().model.updateById(row.id, make);
         await callback();
-        await afterActionSucceeded();
+        await refresh();
         toast.success('Model successfully updated');
       } else {
         await Api().model.create(make);
         await callback();
-        await afterActionSucceeded();
+        await refresh();
         toast.success('Model successfully saved')
       }
     } catch (err) {
@@ -92,7 +79,7 @@ export const ModelsTab: React.FC = () => {
     try {
       await Api().model.deleteById(make.id);
       await callback();
-      setTimeout(async () => await afterActionSucceeded(), dialogDisappearDuration)
+      setTimeout(async () => await refresh(), dialogDelay)
       toast.success('Model successfully deleted')
     } catch (err) {
       toast.error((err as Error).message)

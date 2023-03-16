@@ -1,72 +1,61 @@
 import React from 'react';
 import {Stack} from '@mui/material';
-import {useRouter} from 'next/router';
-import {GridCallbackDetails, GridPaginationModel, GridRowId, GridRowSelectionModel} from '@mui/x-data-grid';
+import {GridCallbackDetails, GridRowId, GridRowSelectionModel, GridPaginationModel} from '@mui/x-data-grid';
 import {toast} from 'react-toastify';
 
 import {SettingsTab} from '@components/settings/tabs/wrapper/SettingsTab';
 import {GenerationsColumns} from '@core/consts/settings';
 import {GenerationsTabTable} from '@components/settings/tabs/generation/GenerationsTabTable';
 import {GenerationsTabForm} from '@components/settings/tabs/generation/GenerationsTabForm';
-import {InitialPage, InitialPageSize} from '@core/consts/pagination';
 import {useMutate} from '@core/hooks/useMutate';
 import {Generation} from '@core/types';
-import {DefaultMutateConfiguration, GenerationsSWRKey, MakesSWRKey, ModelsSWRKey} from '@core/consts/swr';
-import {PageableUtils} from '@core/utils/pageable';
+import {DefaultMutateConfiguration, GenerationsSWRKey} from '@core/consts/swr';
 import {useGenerations} from '@core/hooks/entities/useGenerations';
-import {useDialogDisappearDuration} from '@core/hooks/useDialogDisappearDuration';
+import {useDialogDelay} from '@core/hooks/useDialogDelay';
 import {Api} from '@core/api';
+import {usePagination} from '@core/hooks/usePagination';
+import {useNumberedQueryParam} from '@core/hooks/useNumberedQueryParam';
 
 export const GenerationsTab: React.FC = () => {
-  const router = useRouter();
-
-  const page = Number.parseInt(router.query.page as string) || InitialPage;
-  const size = Number.parseInt(router.query.size as string) || InitialPageSize;
-  const model = Number.parseInt(router.query.model as string);
-
   const mutate = useMutate();
-  const dialogDisappearDuration = useDialogDisappearDuration();
-  const generations = useGenerations(model, {page, size});
+  const dialogDelay = useDialogDelay();
+  const model = useNumberedQueryParam('model');
+  const generations = useGenerations(model);
+
+  const [page, size, paginationHandler] = usePagination();
   const [selection, setSelection] = React.useState<Array<GridRowId>>([]);
 
-  const row = generations.content.find(({id}) => id === selection[0])
+  const row = generations.find(({id}) => id === selection[0])
 
   React.useEffect(() => {
-    mutate(GenerationsSWRKey)
-      .catch(toast.error);
-  }, [page, size, model, mutate])
+    if (model) {
+      mutate(GenerationsSWRKey).catch(toast.error);
+    }
+    else {
+      mutate(GenerationsSWRKey, [], DefaultMutateConfiguration).catch(toast.error)
+    }
+  }, [model, mutate])
 
   React.useEffect(() => {
     return () => {
-      mutate(GenerationsSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(toast.error)
+      mutate(GenerationsSWRKey, [], DefaultMutateConfiguration).catch(toast.error)
     }
   }, [mutate])
 
-  const handlePaginationChange = async (pagination: GridPaginationModel, _: GridCallbackDetails) => {
-    await router.push({
-      pathname: router.pathname,
-      query: {
-        ...router.query,
-        page: pagination.page + 1,
-        size: pagination.pageSize
-      }
-    })
+
+  const handlePaginationChange = async (pagination: GridPaginationModel, callback: GridCallbackDetails) => {
+    resetSelection();
+    await paginationHandler(pagination, callback);
   }
 
+  const clear = async () => await mutate(GenerationsSWRKey, [], DefaultMutateConfiguration);
+  const handleRefreshClick = async (_: React.MouseEvent) => refresh();
   const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) =>
     resetSelection(selection)
   const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
   const resetSelection = (value: Array<GridRowId> = []) => setSelection(value);
 
-  const handleRefreshClick = async (_: React.MouseEvent) => {
-    resetSelection();
-    await mutate(MakesSWRKey);
-    await mutate(ModelsSWRKey);
-    await mutate(GenerationsSWRKey);
-  }
-
-  const afterActionSucceeded = async () => {
+  const refresh = async () => {
     resetSelection();
     await mutate(GenerationsSWRKey);
   }
@@ -76,12 +65,12 @@ export const GenerationsTab: React.FC = () => {
       if (row) {
         await Api().generation.updateById(row.id, generation);
         await callback();
-        await afterActionSucceeded();
+        await refresh();
         toast.success('Generation successfully updated');
       } else {
         await Api().generation.create(generation);
         await callback();
-        await afterActionSucceeded();
+        await refresh();
         toast.success('Generation successfully saved')
       }
     } catch (err) {
@@ -93,7 +82,7 @@ export const GenerationsTab: React.FC = () => {
     try {
       await Api().generation.deleteById(generation.id);
       await callback();
-      setTimeout(async () => await afterActionSucceeded(), dialogDisappearDuration)
+      setTimeout(async () => await refresh(), dialogDelay)
       toast.success('Generation successfully deleted')
     } catch (err) {
       toast.error((err as Error).message);

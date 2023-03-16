@@ -1,13 +1,12 @@
 import {AxiosInstance} from 'axios';
 
 import {Make} from '@core/types';
-import {Page, Pageable} from '@core/types/common';
 import {MakeEndpoint} from '@core/consts/endpoints';
 
 export const MakeApi = (instance: AxiosInstance) => ({
 
-  async getAll(pageable?: Pageable): Promise<Page<Make>> {
-    const {data} = await instance.get<Page<Make>>(MakeEndpoint, {params: {...pageable}});
+  async getAll(): Promise<Array<Make>> {
+    const {data} = await instance.get<Array<Make>>(MakeEndpoint);
     return data;
   },
 
@@ -23,7 +22,7 @@ export const MakeApi = (instance: AxiosInstance) => ({
 
   async create(make: Make): Promise<Make> {
     const {data} = await instance.post<Make>(MakeEndpoint, make);
-    return make;
+    return data;
   }
 
 })

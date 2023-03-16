@@ -1,7 +1,7 @@
 import React from 'react';
 import {DataGridProps} from '@mui/x-data-grid';
 
-import {Optional, Page} from '@core/types/common';
+import {Optional} from '@core/types/common';
 
 export enum SettingsTab {
   MAKES = 'makes',
@@ -27,7 +27,7 @@ export interface SettingsTabTableProps<T> {
   selection: Optional<T>;
   onRefreshClick: React.MouseEventHandler<HTMLButtonElement>;
   onUnselectClick: React.MouseEventHandler<HTMLButtonElement>;
-  rows: Page<T>;
+  rows: Array<T>;
   columns: DataGridProps['columns'];
   onPaginationModelChange: DataGridProps['onPaginationModelChange'];
   onRowSelectionModelChange: DataGridProps['onRowSelectionModelChange'];

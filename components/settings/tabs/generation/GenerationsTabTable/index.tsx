@@ -10,14 +10,14 @@ import {StaticImageData} from 'next/image';
 import {Generation} from '@core/types';
 import {useMutate} from '@core/hooks/useMutate';
 import {useMakes} from '@core/hooks/entities/useMakes';
-import {DefaultMutateConfiguration, MakesSWRKey, ModelsSWRKey} from '@core/consts/swr';
-import {PageableUtils} from '@core/utils/pageable';
+import {DefaultMutateConfiguration, ModelsSWRKey} from '@core/consts/swr';
 import {useModels} from '@core/hooks/entities/useModels';
 import {FormInputDropdown} from '@components/common/form/FormInputDropdown';
 import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
 import {DefaultPageSizeOptions} from '@core/consts/pagination';
 import {SettingsTabTableProps} from '@core/types/settings';
 import {ArrayUtils} from '@core/utils/array';
+import {useNumberedQueryParam} from '@core/hooks/useNumberedQueryParam';
 
 import NotFound from '@public/web-page.png';
 import PleaseSelect from '@public/cinema-seat.png';
@@ -44,8 +44,8 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
 
   const router = useRouter();
   
-  const make = Number.parseInt(router.query.make as string);
-  const model = Number.parseInt(router.query.model as string);
+  const make = useNumberedQueryParam('make');
+  const model = useNumberedQueryParam('model');
   
   const mutate = useMutate();
   const makes = useMakes();
@@ -56,20 +56,14 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
   const noRowsOverlayImage = resolveNoRowsOverlayImage(make, model);
 
   React.useEffect(() => {
-    mutate(MakesSWRKey)
-      .catch(toast.error);
-    return () => {
-      mutate(MakesSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(toast.error)
+    if (make) {
+      mutate(ModelsSWRKey).catch(toast.error);
     }
-  }, [mutate])
-
-  React.useEffect(() => {
-    mutate(ModelsSWRKey)
-      .catch(toast.error);
+    else {
+      mutate(ModelsSWRKey, [], DefaultMutateConfiguration).catch(toast.error)
+    }
     return () => {
-      mutate(ModelsSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(toast.error)
+      mutate(ModelsSWRKey, [], DefaultMutateConfiguration).catch(toast.error)
     }
   }, [make, mutate])
 
@@ -89,7 +83,7 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
           <FormInputDropdown
             size="small"
             name="make"
-            options={makes.content}
+            options={makes}
             defaultValue=""
             placeholder="Please select..."
             labelKey="name"
@@ -102,14 +96,14 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
           <FormInputDropdown
             size="small"
             name="model"
-            options={models.content}
+            options={models}
             defaultValue=""
             placeholder="Please select..."
             labelKey="name"
             valueKey="id"
             label="Model"
             margin="normal"
-            disabled={!model && ArrayUtils.isEmpty(models.content)}
+            disabled={!model && ArrayUtils.isEmpty(models)}
             onResetClick={() => handleSelectionChange(make)}
             onChange={(event) => handleSelectionChange(make, Number.parseInt(event.target?.value))}
           />

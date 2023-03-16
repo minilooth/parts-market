@@ -1,13 +1,12 @@
 import {AxiosInstance} from 'axios';
 
-import {Page, Pageable} from '@core/types/common';
 import {Generation} from '@core/types';
 import {GenerationEndpoint} from '@core/consts/endpoints';
 
 export const GenerationApi = (instance: AxiosInstance) => ({
 
-  async getAll(modelId: number, pageable?: Pageable): Promise<Page<Generation>> {
-    const {data} = await instance.get<Page<Generation>>(GenerationEndpoint, {params: {...pageable, modelId: modelId}});
+  async getAll(modelId?: number): Promise<Array<Generation>> {
+    const {data} = await instance.get<Array<Generation>>(GenerationEndpoint, {params: {modelId: modelId || undefined}});
     return data;
   },
 

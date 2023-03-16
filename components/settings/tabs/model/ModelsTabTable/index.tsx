@@ -4,7 +4,6 @@ import ClearIcon from '@mui/icons-material/Clear';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {FormProvider, useForm} from 'react-hook-form';
 import {useRouter} from 'next/router';
-import {toast} from 'react-toastify';
 import {StaticImageData} from 'next/image';
 
 import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
@@ -12,10 +11,8 @@ import {DefaultPageSizeOptions} from '@core/consts/pagination';
 import {Model} from '@core/types';
 import {FormInputDropdown} from '@components/common/form/FormInputDropdown';
 import {useMakes} from '@core/hooks/entities/useMakes';
-import {PageableUtils} from '@core/utils/pageable';
-import {DefaultMutateConfiguration, MakesSWRKey} from '@core/consts/swr';
-import {useMutate} from '@core/hooks/useMutate';
 import {SettingsTabTableProps} from '@core/types/settings';
+import {useNumberedQueryParam} from '@core/hooks/useNumberedQueryParam';
 
 import NotFound from '@public/web-page.png'
 import PleaseSelect from '@public/cinema-seat.png';
@@ -37,25 +34,13 @@ const resolveNoRowsOverlayImage = (make: number): StaticImageData => {
 export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = (props) => {
   const {selection, onRefreshClick, onUnselectClick, ...other} = props
 
-  const router = useRouter();
-  
-  const make = Number.parseInt(router.query.make as string);
-  
-  const mutate = useMutate();
   const makes = useMakes();
+  const router = useRouter();
+  const make = useNumberedQueryParam('make');
   const methods = useForm({mode: 'onChange', values: router.query})
 
   const noRowsOverlayText = resolveNoRowsOverlayText(make);
   const noRowsOverlayImage = resolveNoRowsOverlayImage(make);
-
-  React.useEffect(() => {
-    mutate(MakesSWRKey)
-      .catch(toast.error);
-    return () => {
-      mutate(MakesSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(toast.error)
-    }
-  }, [mutate])
 
   const handleMakeChange = async (make?: number) => {
     const {page, size, ...other} = router.query;
@@ -73,7 +58,7 @@ export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = (props) =>
           <FormInputDropdown
             size="small"
             name="make"
-            options={makes.content}
+            options={makes}
             defaultValue=""
             placeholder="Please select..."
             labelKey="name"

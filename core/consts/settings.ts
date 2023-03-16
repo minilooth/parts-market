@@ -159,3 +159,84 @@ export const StartYear = 1960;
 export const YearsAscending = Array.from(Array(new Date().getFullYear() - StartYear + 1).keys())
   .map(value => ({ value: value + StartYear }));
 export const YearsDescending = [...YearsAscending].reverse();
+
+export const BodyTypesColumns: GridColDef[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    flex: 0.1,
+    align: 'center',
+    headerAlign: 'center',
+  },
+  {
+    field: 'name',
+    headerName: 'Name',
+    flex: 0.3
+  },
+  {
+    field: 'createdAt',
+    headerName: 'Created',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Updated',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+]
+
+export const EngineTypesColumns: GridColDef[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    flex: 0.1,
+    align: 'center',
+    headerAlign: 'center',
+  },
+  {
+    field: 'name',
+    headerName: 'Name',
+    flex: 0.3
+  },
+  {
+    field: 'createdAt',
+    headerName: 'Created',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Updated',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+]
+
+export const TransmissionTypesColumns: GridColDef[] = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    flex: 0.1,
+    align: 'center',
+    headerAlign: 'center',
+  },
+  {
+    field: 'name',
+    headerName: 'Name',
+    flex: 0.3
+  },
+  {
+    field: 'createdAt',
+    headerName: 'Created',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Updated',
+    flex: 0.3,
+    valueFormatter: ({value}) => value && moment(value).fromNow()
+  },
+]

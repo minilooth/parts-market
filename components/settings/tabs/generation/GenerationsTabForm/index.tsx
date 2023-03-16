@@ -5,7 +5,6 @@ import {FieldValues, FormProvider, useForm} from 'react-hook-form';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import {useRouter} from 'next/router';
 
 import {Generation} from '@core/types';
 import {SettingsTabFormProps} from '@core/types/settings';
@@ -17,12 +16,10 @@ import {GenerationSchema} from '@core/schemas/generation';
 import {YearsAscending, YearsDescending} from '@core/consts/settings';
 import {useDialogState} from '@core/hooks/useDialogState';
 import {DeleteConfirmationDialog} from '@components/dialog/DeleteConfirmationDialog';
+import {useNumberedQueryParam} from '@core/hooks/useNumberedQueryParam';
 
 export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({selection, onSave, onDelete}) => {
-  const router = useRouter();
-
-  const make = Number.parseInt(router.query.make as string);
-
+  const make = useNumberedQueryParam('make');
   const models = useModels(make);
   const methods = useForm({mode: 'onChange', resolver: yupResolver(GenerationSchema)})
   const [dialogOpened, openDialog, closeDialog] = useDialogState();
@@ -66,7 +63,7 @@ export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({
             size="small"
             name="modelId"
             defaultValue=""
-            options={models.content}
+            options={models}
             labelKey="name"
             valueKey="id"
             label="Model"
