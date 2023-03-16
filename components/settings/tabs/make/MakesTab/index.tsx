@@ -19,16 +19,16 @@ import {useDialogDisappearDuration} from '@core/hooks/useDialogDisappearDuration
 
 export const MakesTab: React.FC = () => {
   const router = useRouter();
-  const mutate = useMutate();
-  const dialogDisappearDuration = useDialogDisappearDuration();
 
   const page = Number.parseInt(router.query.page as string) || InitialPage;
   const size = Number.parseInt(router.query.size as string) || InitialPageSize;
 
+  const mutate = useMutate();
+  const dialogDisappearDuration = useDialogDisappearDuration();
   const makes = useMakes({page, size});
+  const [selection, setSelection] = React.useState<Array<GridRowId>>([]);
 
-  const [selectedIds, setSelectedIds] = React.useState<Array<GridRowId>>([]);
-  const selection = makes.content.find(({id}) => id === selectedIds?.[0])
+  const row = makes.content.find(({id}) => id === selection[0])
 
   React.useEffect(() => {
     mutate(MakesSWRKey)
@@ -53,34 +53,32 @@ export const MakesTab: React.FC = () => {
     })
   }
 
-  const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) => {
-    resetSelection(selection)
-  }
-
   const handleRefreshClick = async (_: React.MouseEvent) => {
     resetSelection();
     await mutate(MakesSWRKey);
   }
 
+  const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) =>
+    resetSelection(selection)
   const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
-  const resetSelection = (value: Array<GridRowId> = []) => setSelectedIds(value);
+  const resetSelection = (value: Array<GridRowId> = []) => setSelection(value);
 
-  const postRequestAction = async () => {
+  const afterActionSucceeded = async () => {
     resetSelection();
     await mutate(MakesSWRKey);
   }
 
   const handleSaveClick = async (make: Make, callback: VoidFunction) => {
     try {
-      if (selection) {
-        await Api().make.updateById(selection.id, make);
+      if (row) {
+        await Api().make.updateById(row.id, make);
         await callback();
-        await postRequestAction();
+        await afterActionSucceeded();
         toast.success('Make successfully updated');
       } else {
         await Api().make.create(make);
         await callback();
-        await postRequestAction();
+        await afterActionSucceeded();
         toast.success('Make successfully saved')
       }
     } catch (err) {
@@ -92,7 +90,7 @@ export const MakesTab: React.FC = () => {
     try {
       await Api().make.deleteById(make.id);
       await callback();
-      setTimeout(async () => await postRequestAction(), dialogDisappearDuration)
+      setTimeout(async () => await afterActionSucceeded(), dialogDisappearDuration)
       toast.success('Make successfully deleted')
     } catch (err) {
       toast.error((err as Error).message);
@@ -103,18 +101,18 @@ export const MakesTab: React.FC = () => {
     <SettingsTab title="Makes">
       <Stack direction="row" flex={1} spacing={3}>
         <MakesTabTable
-          selection={selection}
+          selection={row}
           rows={makes}
           columns={MakesColumns}
           paginationModel={{page: page - 1, pageSize: size}}
-          rowSelectionModel={selectedIds}
+          rowSelectionModel={selection}
           onRefreshClick={handleRefreshClick}
           onUnselectClick={handleUnselectClick}
-          onPaginationChange={handlePaginationChange}
-          onSelectionChange={handleRowSelectionChange}
+          onPaginationModelChange={handlePaginationChange}
+          onRowSelectionModelChange={handleRowSelectionChange}
         />
         <MakesTabForm
-          selection={selection}
+          selection={row}
           onSave={handleSaveClick}
           onDelete={handleDeleteClick}
         />

@@ -5,9 +5,9 @@ import {SettingsTab} from '@core/types/settings';
 import {MakesTab} from '@components/settings/tabs/make/MakesTab';
 import {ModelsTab} from '@components/settings/tabs/model/ModelsTab';
 import {GenerationsTab} from '@components/settings/tabs/generation/GenerationsTab';
-import {EnginesTab} from '@components/settings/tabs/engine/EnginesTab';
+import {EngineTypesTab} from '@components/settings/tabs/engine-type/EngineTypesTab';
 import {BodyTypesTab} from '@components/settings/tabs/body-type/BodyTypesTab';
-import {TransmissionsTab} from '@components/settings/tabs/transmission/TransmissionsTab';
+import {TransmissionTypesTab} from '@components/settings/tabs/transmission-type/TransmissionTypesTab';
 import {CategoriesTab} from '@components/settings/tabs/category/CategoriesTab';
 import {SubcategoriesTab} from '@components/settings/tabs/subcategory/SubcategoriesTab';
 import {GroupsTab} from '@components/settings/tabs/group/GroupsTab';
@@ -28,12 +28,12 @@ export const SettingsContent: React.FC<SettingsContentProps> = ({ activeTab }) =
         return <ModelsTab/>
       case SettingsTab.GENERATIONS:
         return <GenerationsTab/>
-      case SettingsTab.ENGINES:
-        return <EnginesTab/>
+      case SettingsTab.ENGINE_TYPES:
+        return <EngineTypesTab/>
       case SettingsTab.BODY_TYPES:
         return <BodyTypesTab/>
-      case SettingsTab.TRANSMISSIONS:
-        return <TransmissionsTab/>
+      case SettingsTab.TRANSMISSION_TYPES:
+        return <TransmissionTypesTab/>
       case SettingsTab.CATEGORIES:
         return <CategoriesTab/>
       case SettingsTab.SUBCATEGORIES:

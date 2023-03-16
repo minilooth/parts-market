@@ -19,22 +19,22 @@ import {Api} from '@core/api';
 
 export const ModelsTab: React.FC = () => {
   const router = useRouter();
-  const mutate = useMutate();
-  const dialogDisappearDuration = useDialogDisappearDuration();
 
   const page = Number.parseInt(router.query.page as string) || InitialPage;
   const size = Number.parseInt(router.query.size as string) || InitialPageSize;
-  const makeId = Number.parseInt(router.query.makeId as string);
+  const make = Number.parseInt(router.query.make as string);
 
-  const models = useModels(makeId, {page, size});
+  const mutate = useMutate();
+  const dialogDisappearDuration = useDialogDisappearDuration();
+  const models = useModels(make, {page, size});
+  const [selection, setSelection] = React.useState<Array<GridRowId>>([]);
 
-  const [selectedIds, setSelectedIds] = React.useState<Array<GridRowId>>([]);
-  const selection = models.content.find(({id}) => id === selectedIds?.[0])
+  const row = models.content.find(({id}) => id === selection[0])
 
   React.useEffect(() => {
     mutate(ModelsSWRKey)
       .catch(toast.error);
-  }, [page, size, makeId, mutate])
+  }, [page, size, make, mutate])
 
   React.useEffect(() => {
     return () => {
@@ -54,35 +54,33 @@ export const ModelsTab: React.FC = () => {
     })
   }
 
-  const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) => {
-    resetSelection(selection)
-  }
-
   const handleRefreshClick = async (_: React.MouseEvent) => {
     resetSelection();
     await mutate(MakesSWRKey)
     await mutate(ModelsSWRKey)
   }
 
+  const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) =>
+    resetSelection(selection)
   const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
-  const resetSelection = (value: Array<GridRowId> = []) => setSelectedIds(value);
+  const resetSelection = (value: Array<GridRowId> = []) => setSelection(value);
 
-  const postRequestAction = async () => {
+  const afterActionSucceeded = async () => {
     resetSelection();
     await mutate(ModelsSWRKey);
   }
 
   const handleSaveClick = async (make: Model, callback: VoidFunction) => {
     try {
-      if (selection) {
-        await Api().model.updateById(selection.id, make);
+      if (row) {
+        await Api().model.updateById(row.id, make);
         await callback();
-        await postRequestAction();
+        await afterActionSucceeded();
         toast.success('Model successfully updated');
       } else {
         await Api().model.create(make);
         await callback();
-        await postRequestAction();
+        await afterActionSucceeded();
         toast.success('Model successfully saved')
       }
     } catch (err) {
@@ -94,10 +92,9 @@ export const ModelsTab: React.FC = () => {
     try {
       await Api().model.deleteById(make.id);
       await callback();
-      setTimeout(async () => await postRequestAction(), dialogDisappearDuration)
+      setTimeout(async () => await afterActionSucceeded(), dialogDisappearDuration)
       toast.success('Model successfully deleted')
-    }
-    catch (err) {
+    } catch (err) {
       toast.error((err as Error).message)
     }
   }
@@ -106,18 +103,18 @@ export const ModelsTab: React.FC = () => {
     <SettingsTab title="Models">
       <Stack direction="row" flex={1} spacing={3}>
         <ModelsTabTable
-          selection={selection}
+          selection={row}
           rows={models}
           columns={ModelsColumns}
           paginationModel={{page: page - 1, pageSize: size}}
-          rowSelectionModel={selectedIds}
+          rowSelectionModel={selection}
           onRefreshClick={handleRefreshClick}
           onUnselectClick={handleUnselectClick}
-          onPaginationChange={handlePaginationChange}
-          onSelectionChange={handleRowSelectionChange}
+          onPaginationModelChange={handlePaginationChange}
+          onRowSelectionModelChange={handleRowSelectionChange}
         />
         <ModelsTabForm
-          selection={selection}
+          selection={row}
           onSave={handleSaveClick}
           onDelete={handleDeleteClick}
         />

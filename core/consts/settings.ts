@@ -22,15 +22,15 @@ export const SettingsMenuItems: Array<Array<SettingsMenuItem>> = [
   ],
   [
     {
-      title: 'Transmissions',
-      key: SettingsTab.TRANSMISSIONS
+      title: 'Transmission Types',
+      key: SettingsTab.TRANSMISSION_TYPES
     },
     {
-      title: 'Engines',
-      key: SettingsTab.ENGINES
+      title: 'Engine Types',
+      key: SettingsTab.ENGINE_TYPES
     },
     {
-      title: 'Body types',
+      title: 'Body Types',
       key: SettingsTab.BODY_TYPES
     }
   ],

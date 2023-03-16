@@ -7,8 +7,8 @@ export enum SettingsTab {
   MAKES = 'makes',
   MODELS = 'models',
   GENERATIONS = 'generations',
-  TRANSMISSIONS = 'transmissions',
-  ENGINES = 'engines',
+  TRANSMISSION_TYPES = 'transmission-types',
+  ENGINE_TYPES = 'engine-types',
   BODY_TYPES = 'body-types',
   CATEGORIES = 'categories',
   SUBCATEGORIES = 'subcategories',
@@ -29,8 +29,8 @@ export interface SettingsTabTableProps<T> {
   onUnselectClick: React.MouseEventHandler<HTMLButtonElement>;
   rows: Page<T>;
   columns: DataGridProps['columns'];
-  onPaginationChange: DataGridProps['onPaginationModelChange'];
-  onSelectionChange: DataGridProps['onRowSelectionModelChange'];
+  onPaginationModelChange: DataGridProps['onPaginationModelChange'];
+  onRowSelectionModelChange: DataGridProps['onRowSelectionModelChange'];
   rowSelectionModel: DataGridProps['rowSelectionModel'];
   paginationModel: DataGridProps['paginationModel'];
 }

@@ -2,9 +2,9 @@ import React from 'react';
 
 import {SettingsTab} from '@components/settings/tabs/wrapper/SettingsTab';
 
-export const EnginesTab: React.FC = () => {
+export const EngineTypesTab: React.FC = () => {
   return (
-    <SettingsTab title="Engines">
+    <SettingsTab title="Engine Types">
       Content
     </SettingsTab>
   )

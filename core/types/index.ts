@@ -28,3 +28,15 @@ export interface Generation extends Entity {
   issuedFrom: number;
   issuedTo: number;
 }
+
+export interface BodyType extends Entity {
+  name: string;
+}
+
+export interface EngineType extends Entity {
+  name: string;
+}
+
+export interface TransmissionType extends Entity {
+  name: string;
+}

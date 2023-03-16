@@ -1,9 +1,11 @@
 import React from 'react';
 import {useRouter} from 'next/router';
-import {Button, Fade, SelectChangeEvent, Stack, Typography} from '@mui/material';
+import {Button, Fade, Stack, Typography} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {FormProvider, useForm} from 'react-hook-form';
+import {toast} from 'react-toastify';
+import {StaticImageData} from 'next/image';
 
 import {Generation} from '@core/types';
 import {useMutate} from '@core/hooks/useMutate';
@@ -15,109 +17,69 @@ import {FormInputDropdown} from '@components/common/form/FormInputDropdown';
 import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
 import {DefaultPageSizeOptions} from '@core/consts/pagination';
 import {SettingsTabTableProps} from '@core/types/settings';
+import {ArrayUtils} from '@core/utils/array';
 
 import NotFound from '@public/web-page.png';
 import PleaseSelect from '@public/cinema-seat.png';
 
-export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = ({
-                                                                                   selection,
-                                                                                   onRefreshClick,
-                                                                                   onUnselectClick,
-                                                                                   rows,
-                                                                                   columns,
-                                                                                   onPaginationChange,
-                                                                                   onSelectionChange,
-                                                                                   rowSelectionModel,
-                                                                                   paginationModel
-                                                                                 }) => {
+const resolveNoRowsOverlayText = (make: number, model: number): string => {
+  if (!make) {
+    return 'Please select make'
+  }
+  if (!model) {
+    return 'Please select model'
+  }
+  return 'No data found in database';
+}
+
+const resolveNoRowsOverlayImage = (make: number, model: number): StaticImageData => {
+  if (!make || !model) {
+    return PleaseSelect;
+  }
+  return NotFound;
+}
+
+export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = (props) => {
+  const {selection, onRefreshClick, onUnselectClick, ...other} = props;
+
   const router = useRouter();
-
-  const makeId = Number.parseInt(router.query.makeId as string) || undefined;
-  const modelId = Number.parseInt(router.query.modelId as string) || undefined;
-
-  const methods = useForm({mode: 'onChange'})
-  const {reset, watch, setValue} = methods
-
+  
+  const make = Number.parseInt(router.query.make as string);
+  const model = Number.parseInt(router.query.model as string);
+  
   const mutate = useMutate();
   const makes = useMakes();
-  const models = useModels(makeId);
+  const models = useModels(make);
+  const methods = useForm({mode: 'onChange', values: router.query})
 
-  const selectedMakeId = watch('makeId');
-  const selectedModelId = watch('modelId');
-
-  React.useEffect(() => {
-    if (makes && makes.content.length > 0) {
-      setValue('makeId', makeId)
-    }
-    if (models && models.content.length > 0) {
-      setValue('modelId', modelId)
-    }
-  }, [makeId, modelId, reset, setValue, makes, models])
+  const noRowsOverlayText = resolveNoRowsOverlayText(make, model);
+  const noRowsOverlayImage = resolveNoRowsOverlayImage(make, model);
 
   React.useEffect(() => {
     mutate(MakesSWRKey)
-      .catch(console.error);
+      .catch(toast.error);
     return () => {
       mutate(MakesSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(console.error)
+        .catch(toast.error)
     }
   }, [mutate])
 
   React.useEffect(() => {
     mutate(ModelsSWRKey)
-      .catch(console.error);
+      .catch(toast.error);
     return () => {
       mutate(ModelsSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(console.error)
+        .catch(toast.error)
     }
-  }, [makeId, mutate])
+  }, [make, mutate])
 
-  const handleMakeSelectChange = async (event: SelectChangeEvent<unknown>, _: React.ReactNode) => {
-    await handleSelectionChange(Number.parseInt(event.target.value as string));
-  }
-
-  const handleModelSelectChange = async (event: SelectChangeEvent<unknown>, _: React.ReactNode) => {
-    await handleSelectionChange(makeId, Number.parseInt(event.target.value as string));
-  }
-
-  const handleModelResetClick = async () => {
-    await handleSelectionChange(makeId);
-  }
-
-  const handleMakeResetClick = async () => {
-    await handleSelectionChange();
-  }
-
-  const handleSelectionChange = async (makeId?: number, modelId?: number) => {
-    setValue('makeId', makeId)
-    setValue('modelId', modelId)
-    await router.push({
-      pathname: router.pathname,
-      query: {
-        ...router.query,
-        makeId: makeId,
-        modelId: modelId,
-        page: undefined,
-        size: undefined
-      }
-    })
-  }
-
-  const resolveNoRowsOverlayLabel = () => {
-    if (!selectedMakeId) {
-      return 'Please select make'
+  const handleSelectionChange = async (make?: number, model?: number) => {
+    const { page, size, ...other } = router.query;
+    const url = {
+      pathname: router.pathname, 
+      query: {...other, make: make, model: model}
     }
-    if (!selectedModelId) {
-      return 'Please select model'
-    }
-    return 'No data found in database';
-  }
-
-  const resolveNoRowsOverlayImage = () => {
-    if (!selectedMakeId || !selectedModelId) {
-      return PleaseSelect;
-    }
-    return NotFound;
+    await router.push(url)
   }
 
   return (
@@ -126,7 +88,7 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
         <FormProvider {...methods}>
           <FormInputDropdown
             size="small"
-            name="makeId"
+            name="make"
             options={makes.content}
             defaultValue=""
             placeholder="Please select..."
@@ -134,12 +96,12 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
             valueKey="id"
             label="Make"
             margin="normal"
-            onResetClick={handleMakeResetClick}
-            onChange={handleMakeSelectChange}
+            onResetClick={() => handleSelectionChange()}
+            onChange={(event) => handleSelectionChange(Number.parseInt(event.target?.value))}
           />
           <FormInputDropdown
             size="small"
-            name="modelId"
+            name="model"
             options={models.content}
             defaultValue=""
             placeholder="Please select..."
@@ -147,9 +109,9 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
             valueKey="id"
             label="Model"
             margin="normal"
-            disabled={!selectedMakeId}
-            onResetClick={handleModelResetClick}
-            onChange={handleModelSelectChange}
+            disabled={!model && ArrayUtils.isEmpty(models.content)}
+            onResetClick={() => handleSelectionChange(make)}
+            onChange={(event) => handleSelectionChange(make, Number.parseInt(event.target?.value))}
           />
         </FormProvider>
       </Stack>
@@ -169,15 +131,10 @@ export const GenerationsTabTable: React.FC<SettingsTabTableProps<Generation>> = 
         </Stack>
       </Stack>
       <CustomDataGrid
-        rows={rows}
-        columns={columns}
-        onPaginationModelChange={onPaginationChange}
-        onRowSelectionModelChange={onSelectionChange}
-        rowSelectionModel={rowSelectionModel}
-        paginationModel={paginationModel}
+        {...other}
         pageSizeOptions={DefaultPageSizeOptions}
-        noRowsOverlayText={resolveNoRowsOverlayLabel()}
-        noRowsOverlayImage={resolveNoRowsOverlayImage()}
+        noRowsOverlayText={noRowsOverlayText}
+        noRowsOverlayImage={noRowsOverlayImage}
       />
     </Stack>
   );

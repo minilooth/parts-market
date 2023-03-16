@@ -20,14 +20,13 @@ import {DeleteConfirmationDialog} from '@components/dialog/DeleteConfirmationDia
 
 export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({selection, onSave, onDelete}) => {
   const router = useRouter();
-  const {query} = router;
 
-  const [dialogOpened, openDialog, closeDialog] = useDialogState(false);
+  const make = Number.parseInt(router.query.make as string);
 
-  const makeId = Number.parseInt(query.makeId as string) || undefined;
-
-  const models = useModels(makeId);
+  const models = useModels(make);
   const methods = useForm({mode: 'onChange', resolver: yupResolver(GenerationSchema)})
+  const [dialogOpened, openDialog, closeDialog] = useDialogState();
+
   const {handleSubmit, reset, formState: {errors, isValid}, setValue} = methods
 
   React.useEffect(() => {
@@ -52,18 +51,6 @@ export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({
     });
   }
 
-  const handleModelResetClick = () => {
-    setValue('modelId', undefined, {shouldValidate: true})
-  }
-
-  const handleIssuedFromResetClick = () => {
-    setValue('issuedFrom', undefined, {shouldValidate: true})
-  }
-
-  const handleIssuedToResetClick = () => {
-    setValue('issuedTo', undefined, {shouldValidate: true})
-  }
-
   return (
     <Stack direction="row" flex={1} minWidth="400px">
       <Stack flex={0.5}>
@@ -84,10 +71,10 @@ export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({
             valueKey="id"
             label="Model"
             margin="normal"
-            disabled={!makeId}
+            disabled={!make}
             error={!!errors.modelId}
             helperText={errors.modelId?.message as string}
-            onResetClick={handleModelResetClick}
+            onResetClick={() => setValue('modelId', undefined, {shouldValidate: true})}
           />
           <FormInputText
             size="small"
@@ -110,7 +97,7 @@ export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({
             margin="normal"
             error={!!errors.issuedFrom}
             helperText={errors.issuedFrom?.message as string}
-            onResetClick={handleIssuedFromResetClick}
+            onResetClick={() => setValue('issuedFrom', undefined, {shouldValidate: true})}
           />
           <FormInputDropdown
             size="small"
@@ -123,7 +110,7 @@ export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({
             margin="normal"
             error={!!errors.issuedTo}
             helperText={errors.issuedTo?.message as string}
-            onResetClick={handleIssuedToResetClick}
+            onResetClick={() => setValue('issuedTo', undefined, {shouldValidate: true})}
           />
         </FormProvider>
 
@@ -163,11 +150,11 @@ export const GenerationsTabForm: React.FC<SettingsTabFormProps<Generation>> = ({
           matches={selection?.name}
           onClose={closeDialog}
           onConfirm={handleDeleteClick}
-          width={550}
         >
-          <Stack spacing={1}>
+          <Stack spacing={1} width="100%">
             <Typography variant="body2" textAlign="justify">
-              This action <b>cannot</b> be undone. This will permanently delete generation and all other entities which
+              This action <b>cannot</b> be undone.
+              This will permanently delete generation and all other entities which
               linked with them.
             </Typography>
             <Typography variant="body2">

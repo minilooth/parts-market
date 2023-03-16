@@ -2,9 +2,9 @@ import React from 'react'
 
 import {SettingsTab} from '@components/settings/tabs/wrapper/SettingsTab';
 
-export const TransmissionsTab: React.FC = () => {
+export const TransmissionTypesTab: React.FC = () => {
   return (
-    <SettingsTab title="Transmissions">
+    <SettingsTab title="Transmission Types">
       Content
     </SettingsTab>
   )

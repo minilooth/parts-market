@@ -1,9 +1,11 @@
 import React from 'react'
-import {Button, Fade, SelectChangeEvent, Stack, Typography} from '@mui/material';
+import {Button, Fade, Stack, Typography} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {FormProvider, useForm} from 'react-hook-form';
 import {useRouter} from 'next/router';
+import {toast} from 'react-toastify';
+import {StaticImageData} from 'next/image';
 
 import {CustomDataGrid} from '@components/common/wrappers/CustomDataGrid';
 import {DefaultPageSizeOptions} from '@core/consts/pagination';
@@ -18,76 +20,50 @@ import {SettingsTabTableProps} from '@core/types/settings';
 import NotFound from '@public/web-page.png'
 import PleaseSelect from '@public/cinema-seat.png';
 
-export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
-                                                                  selection,
-                                                                  onRefreshClick,
-                                                                  onUnselectClick,
-                                                                  rows,
-                                                                  columns,
-                                                                  onPaginationChange,
-                                                                  onSelectionChange,
-                                                                  rowSelectionModel,
-                                                                  paginationModel
-                                                                }) => {
+const resolveNoRowsOverlayText = (make: number): string => {
+  if (!make) {
+    return 'Please select make'
+  }
+  return 'No data found in database';
+}
+
+const resolveNoRowsOverlayImage = (make: number): StaticImageData => {
+  if (!make) {
+    return PleaseSelect;
+  }
+  return NotFound;
+}
+
+export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = (props) => {
+  const {selection, onRefreshClick, onUnselectClick, ...other} = props
+
   const router = useRouter();
-  const {makeId} = router.query;
-
-  const methods = useForm({mode: 'onChange'})
-  const {watch, setValue} = methods
-
+  
+  const make = Number.parseInt(router.query.make as string);
+  
   const mutate = useMutate();
   const makes = useMakes();
+  const methods = useForm({mode: 'onChange', values: router.query})
 
-  const selectedMakeId = watch('makeId');
-
-  React.useEffect(() => {
-    if (makes && makes.content.length > 0) {
-      setValue('makeId', makeId);
-    }
-  }, [makeId, makes, setValue])
+  const noRowsOverlayText = resolveNoRowsOverlayText(make);
+  const noRowsOverlayImage = resolveNoRowsOverlayImage(make);
 
   React.useEffect(() => {
     mutate(MakesSWRKey)
-      .catch(console.error);
+      .catch(toast.error);
     return () => {
       mutate(MakesSWRKey, PageableUtils.getEmptyPage(), DefaultMutateConfiguration)
-        .catch(console.error)
+        .catch(toast.error)
     }
   }, [mutate])
 
-  const handleSelectChange = async (event: SelectChangeEvent<unknown>, _: React.ReactNode) => {
-    await handleMakeChange(event.target.value as string);
-  }
-
-  const handleResetClick = async () => {
-    await handleMakeChange();
-  }
-
-  const handleMakeChange = async (makeId?: string) => {
-    setValue('makeId', makeId)
-    await router.push({
+  const handleMakeChange = async (make?: number) => {
+    const {page, size, ...other} = router.query;
+    const url = {
       pathname: router.pathname,
-      query: {
-        ...router.query,
-        makeId: makeId,
-        page: undefined,
-        size: undefined
-      }
-    })
-  }
-
-  const resolveNoRowsOverlayLabel = () => {
-    if (!selectedMakeId) {
-      return 'Please select make'
+      query: {...other, make: make}
     }
-    return 'No data found in database';
-  }
-
-  const resolveNoRowsOverlayImage = () => {
-    if (!selectedMakeId) {
-      return PleaseSelect;
-    }
-    return NotFound;
+    await router.push(url)
   }
 
   return (
@@ -96,7 +72,7 @@ export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
         <FormProvider {...methods}>
           <FormInputDropdown
             size="small"
-            name="makeId"
+            name="make"
             options={makes.content}
             defaultValue=""
             placeholder="Please select..."
@@ -104,8 +80,8 @@ export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
             valueKey="id"
             label="Make"
             margin="normal"
-            onResetClick={handleResetClick}
-            onChange={handleSelectChange}
+            onResetClick={() => handleMakeChange()}
+            onChange={(event) => handleMakeChange(Number.parseInt(event.target?.value))}
           />
         </FormProvider>
       </Stack>
@@ -125,15 +101,10 @@ export const ModelsTabTable: React.FC<SettingsTabTableProps<Model>> = ({
         </Stack>
       </Stack>
       <CustomDataGrid
-        rows={rows}
-        columns={columns}
-        onPaginationModelChange={onPaginationChange}
-        onRowSelectionModelChange={onSelectionChange}
-        rowSelectionModel={rowSelectionModel}
-        paginationModel={paginationModel}
+        {...other}
         pageSizeOptions={DefaultPageSizeOptions}
-        noRowsOverlayText={resolveNoRowsOverlayLabel()}
-        noRowsOverlayImage={resolveNoRowsOverlayImage()}
+        noRowsOverlayText={noRowsOverlayText}
+        noRowsOverlayImage={noRowsOverlayImage}
       />
     </Stack>
   )

@@ -10,17 +10,9 @@ import {SettingsTabTableProps} from '@core/types/settings';
 
 import NotFound from '@public/web-page.png'
 
-export const MakesTabTable: React.FC<SettingsTabTableProps<Make>> = ({
-                                                                selection,
-                                                                onRefreshClick,
-                                                                onUnselectClick,
-                                                                rows,
-                                                                columns,
-                                                                onPaginationChange,
-                                                                onSelectionChange,
-                                                                rowSelectionModel,
-                                                                paginationModel
-                                                              }) => {
+export const MakesTabTable: React.FC<SettingsTabTableProps<Make>> = (props) => {
+  const {selection, onRefreshClick, onUnselectClick, ...other} = props;
+
   return (
     <Stack flex={1} minWidth="400px" spacing={1}>
       <Stack direction="row" alignItems="end">
@@ -39,12 +31,7 @@ export const MakesTabTable: React.FC<SettingsTabTableProps<Make>> = ({
         </Stack>
       </Stack>
       <CustomDataGrid
-        rows={rows}
-        columns={columns}
-        onPaginationModelChange={onPaginationChange}
-        onRowSelectionModelChange={onSelectionChange}
-        rowSelectionModel={rowSelectionModel}
-        paginationModel={paginationModel}
+        {...other}
         pageSizeOptions={DefaultPageSizeOptions}
         noRowsOverlayText="No data found in database"
         noRowsOverlayImage={NotFound}

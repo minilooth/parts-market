@@ -16,9 +16,9 @@ import {useDialogState} from '@core/hooks/useDialogState';
 
 export const MakesTabForm: React.FC<SettingsTabFormProps<Make>> = ({selection, onSave, onDelete}) => {
   const methods = useForm({mode: 'onChange', resolver: yupResolver(MakeSchema)})
-  const {handleSubmit, reset, formState: {errors, isValid}} = methods
+  const [dialogOpened, openDialog, closeDialog] = useDialogState();
 
-  const [dialogOpened, openDialog, closeDialog] = useDialogState(false);
+  const {handleSubmit, reset, formState: {errors, isValid}} = methods
 
   React.useEffect(() => {
     const transformed = FormUtils.transformDatesToMoments(selection || {});

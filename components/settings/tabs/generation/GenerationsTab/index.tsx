@@ -19,22 +19,22 @@ import {Api} from '@core/api';
 
 export const GenerationsTab: React.FC = () => {
   const router = useRouter();
-  const mutate = useMutate();
-  const dialogDisappearDuration = useDialogDisappearDuration();
 
   const page = Number.parseInt(router.query.page as string) || InitialPage;
   const size = Number.parseInt(router.query.size as string) || InitialPageSize;
-  const modelId = Number.parseInt(router.query.modelId as string);
+  const model = Number.parseInt(router.query.model as string);
 
-  const generations = useGenerations(modelId, {page, size});
+  const mutate = useMutate();
+  const dialogDisappearDuration = useDialogDisappearDuration();
+  const generations = useGenerations(model, {page, size});
+  const [selection, setSelection] = React.useState<Array<GridRowId>>([]);
 
-  const [selectedIds, setSelectedIds] = React.useState<Array<GridRowId>>([]);
-  const selection = generations.content.find(({id}) => id === selectedIds?.[0])
+  const row = generations.content.find(({id}) => id === selection[0])
 
   React.useEffect(() => {
     mutate(GenerationsSWRKey)
       .catch(toast.error);
-  }, [page, size, modelId, mutate])
+  }, [page, size, model, mutate])
 
   React.useEffect(() => {
     return () => {
@@ -54,9 +54,10 @@ export const GenerationsTab: React.FC = () => {
     })
   }
 
-  const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) => {
+  const handleRowSelectionChange = (selection: GridRowSelectionModel, _: GridCallbackDetails) =>
     resetSelection(selection)
-  }
+  const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
+  const resetSelection = (value: Array<GridRowId> = []) => setSelection(value);
 
   const handleRefreshClick = async (_: React.MouseEvent) => {
     resetSelection();
@@ -65,29 +66,25 @@ export const GenerationsTab: React.FC = () => {
     await mutate(GenerationsSWRKey);
   }
 
-  const handleUnselectClick = (_: React.MouseEvent) => resetSelection();
-  const resetSelection = (value: Array<GridRowId> = []) => setSelectedIds(value);
-
-  const postRequestAction = async () => {
+  const afterActionSucceeded = async () => {
     resetSelection();
     await mutate(GenerationsSWRKey);
   }
 
   const handleSaveClick = async (generation: Generation, callback: VoidFunction) => {
     try {
-      if (selection) {
-        await Api().generation.updateById(selection.id, generation);
+      if (row) {
+        await Api().generation.updateById(row.id, generation);
         await callback();
-        await postRequestAction();
+        await afterActionSucceeded();
         toast.success('Generation successfully updated');
       } else {
         await Api().generation.create(generation);
         await callback();
-        await postRequestAction();
+        await afterActionSucceeded();
         toast.success('Generation successfully saved')
       }
-    }
-    catch (err) {
+    } catch (err) {
       toast.error((err as Error).message);
     }
   }
@@ -96,7 +93,7 @@ export const GenerationsTab: React.FC = () => {
     try {
       await Api().generation.deleteById(generation.id);
       await callback();
-      setTimeout(async () => await postRequestAction(), dialogDisappearDuration)
+      setTimeout(async () => await afterActionSucceeded(), dialogDisappearDuration)
       toast.success('Generation successfully deleted')
     } catch (err) {
       toast.error((err as Error).message);
@@ -107,18 +104,18 @@ export const GenerationsTab: React.FC = () => {
     <SettingsTab title="Generations">
       <Stack direction="row" flex={1} spacing={3}>
         <GenerationsTabTable
-          selection={selection}
+          selection={row}
           rows={generations}
           columns={GenerationsColumns}
           paginationModel={{page: page - 1, pageSize: size}}
-          rowSelectionModel={selectedIds}
+          rowSelectionModel={selection}
           onRefreshClick={handleRefreshClick}
           onUnselectClick={handleUnselectClick}
-          onPaginationChange={handlePaginationChange}
-          onSelectionChange={handleRowSelectionChange}
+          onPaginationModelChange={handlePaginationChange}
+          onRowSelectionModelChange={handleRowSelectionChange}
         />
         <GenerationsTabForm
-          selection={selection}
+          selection={row}
           onSave={handleSaveClick}
           onDelete={handleDeleteClick}
         />

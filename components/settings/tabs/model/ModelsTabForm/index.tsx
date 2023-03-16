@@ -18,9 +18,9 @@ import {DeleteConfirmationDialog} from '@components/dialog/DeleteConfirmationDia
 
 export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection, onSave, onDelete}) => {
   const makes = useMakes();
-  const [dialogOpened, openDialog, closeDialog] = useDialogState(false);
-
   const methods = useForm({mode: 'onChange', resolver: yupResolver(ModelSchema)})
+  const [dialogOpened, openDialog, closeDialog] = useDialogState();
+
   const {handleSubmit, reset, formState: {errors, isValid}, setValue} = methods
 
   React.useEffect(() => {
@@ -45,10 +45,6 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
     });
   }
 
-  const handleResetClick = () => {
-    setValue('makeId', undefined, {shouldValidate: true})
-  }
-
   return (
     <Stack direction="row" flex={1} minWidth="400px">
       <Stack flex={0.5}>
@@ -71,7 +67,7 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
             margin="normal"
             error={!!errors.makeId}
             helperText={errors.makeId?.message as string}
-            onResetClick={handleResetClick}
+            onResetClick={() => setValue('makeId', undefined, {shouldValidate: true})}
           />
           <FormInputText
             size="small"
@@ -124,7 +120,8 @@ export const ModelsTabForm: React.FC<SettingsTabFormProps<Model>> = ({selection,
         >
           <Stack spacing={1}>
             <Typography variant="body2" textAlign="justify">
-              This action <b>cannot</b> be undone. This will permanently delete model and all other entities which linked
+              This action <b>cannot</b> be undone. This will permanently delete model and all other entities which
+              linked
               with them.
             </Typography>
             <Typography variant="body2">

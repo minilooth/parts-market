@@ -5,7 +5,7 @@ import {
   FormHelperText, IconButton,
   InputLabel,
   MenuItem,
-  Select,
+  Select, SelectChangeEvent,
   SelectProps
 } from '@mui/material';
 import {Controller, useFormContext} from 'react-hook-form';
@@ -13,7 +13,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 import {Optional} from '@core/types/common';
 
-interface FormInputDropdownProps extends Omit<SelectProps, 'margin' | 'notched'> {
+interface FormInputDropdownProps extends Omit<SelectProps<string>, 'margin' | 'notched'> {
   name: string;
   label: Optional<string>;
   options: Array<any>;
@@ -21,8 +21,8 @@ interface FormInputDropdownProps extends Omit<SelectProps, 'margin' | 'notched'>
   labelKey: Optional<string>;
   labelGetter?: Optional<(object: any) => void>;
   helperText?: Optional<string>;
-  margin: FormControlProps['margin']
-  onResetClick: Optional<VoidFunction>;
+  margin: FormControlProps['margin'];
+  onResetClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
@@ -38,8 +38,8 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
                                                                       helperText,
                                                                       margin,
                                                                       sx,
-                                                                      onResetClick,
                                                                       placeholder,
+                                                                      onResetClick,
                                                                       onChange: componentOnChange,
                                                                       ...other
                                                                     }) => {
@@ -63,6 +63,13 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
     }
   }
 
+  const handleChange = (controllerOnChange: (...event: any[]) => void, event: SelectChangeEvent, child: React.ReactNode) => {
+    if (componentOnChange) {
+      componentOnChange(event, child);
+    }
+    controllerOnChange(event, child)
+  }
+
   return (
     <FormControl size={size} margin={margin}>
       <InputLabel shrink={!!placeholder || undefined} error={error}>{label}</InputLabel>
@@ -70,7 +77,7 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
         defaultValue={defaultValue}
         render={({field: {value, onChange: controllerOnChange, ...field}}) => (
           <Select
-            value={value}
+            value={options?.length > 0 ? value : defaultValue}
             {...field}
             {...other}
             size={size}
@@ -78,13 +85,8 @@ export const FormInputDropdown: React.FC<FormInputDropdownProps> = ({
             label={label}
             notched={!!placeholder || undefined}
             displayEmpty={!!placeholder}
-            onChange={(event, child) => {
-              if (componentOnChange) {
-                componentOnChange(event, child);
-              }
-              controllerOnChange(event, child)
-            }}
-            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
+            onChange={(event, child) => handleChange(controllerOnChange, event, child)}
+            MenuProps={{PaperProps: {sx: {maxHeight: 300}}}}
             endAdornment={
               <IconButton
                 onClick={onResetClick}

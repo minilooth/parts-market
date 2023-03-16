@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const useDialogState = (initialValue: boolean): [boolean, VoidFunction, VoidFunction] => {
+export const useDialogState = (initialValue: boolean = false): [boolean, VoidFunction, VoidFunction] => {
   const [opened, setOpened] = React.useState(initialValue);
 
   const open = () => {
